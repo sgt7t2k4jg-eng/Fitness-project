@@ -121,7 +121,7 @@ const back = (p) => { const c = 2.2; return 1 + (c + 1) * Math.pow(p - 1, 3) + c
 const popScale = (t, tIn, tOut = 1e9) => {
   if (t < tIn) return 0;
   if (t >= tOut) return 1 - easeOut(prog(t, tOut, .16));
-  return back(prog(t, tIn, .3));
+  return back(prog(t, tIn, .4));
 };
 const sticker = (el, sc, rot = 0, extra = '') => {
   el.style.transform = `${extra} scale(${sc.toFixed(4)}) rotate(${rot}deg)`;
@@ -185,7 +185,7 @@ window.setTime = function (t) {
   groups[gi].words.forEach((i) => {
     const w = words[i], el = wordEls[i];
     if (t < w.start) { el.style.opacity = 0; return; }
-    const p = prog(t, w.start, .12);
+    const p = prog(t, w.start, .17);
     const active = t < w.end + .02;
     el.style.opacity = 1;
     el.style.color = active ? '#c6ff3d' : '#fff';
@@ -208,7 +208,7 @@ window.setTime = function (t) {
   $('glow').style.opacity = t >= C.full && t < C.scene3 + .4 ? (1 - prog(t, C.full, .9) * .5).toFixed(3) : 0;
 
   // scene 3: tank shrinks to the top to make room for the rep bars
-  const s3 = easeInOut(prog(t, C.scene3, .38));
+  const s3 = easeInOut(prog(t, C.scene3, .55));
   $('tankGroup').style.transform = `translateY(${lerp(0, 20, s3)}px) scale(${lerp(1, .56, s3).toFixed(4)})`;
 
   // ---------- stickers ----------

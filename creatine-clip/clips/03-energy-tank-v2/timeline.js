@@ -2,9 +2,9 @@
 // Used by index.html (visuals), render.js (frames) and sfx.py (audio, via timeline.json).
 (function (root) {
   const FPS = 30;
-  const DURATION = 9.8; // seconds — strictly under 10
-  const SPEECH_START = 0.1;
-  const SPEECH_END = 9.5;
+  const DURATION = 16; // seconds — relaxed pace
+  const SPEECH_START = 0.2;
+  const SPEECH_END = 15.5;
 
   // Exact voiceover script, split into caption groups. "|" marks a pause after the group.
   const GROUPS = [
