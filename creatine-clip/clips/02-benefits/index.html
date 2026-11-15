@@ -147,7 +147,7 @@ const heads = TITLES.map((title, i) => {
   num.style.left = 1080 - right - 132 + 'px';
   const tt = mk('heads', 'abs htitle', title);
   tt.style.left = right + 'px'; tt.style.width = TITLE_W[i] + 'px';
-  return { num, tt, at: C['sec' + (i + 1)], titleAt: C['title' + (i + 1)], out: i < 2 ? C['sec' + (i + 2)] - 0.3 : 1e9 };
+  return { num, tt, at: C['sec' + (i + 1)], titleAt: C['title' + (i + 1)], out: i < 2 ? C['sec' + (i + 2)] - 0.45 : 1e9 };
 });
 
 // ---- 1: barbell plates (pairs, inner -> outer) + session checks ----
@@ -172,14 +172,14 @@ const sparkle = (els, t, at) => els.forEach((d, i) => {
 const papers = C.papers.map((_, i) => mk('papers', 'abs paper', '<b></b><b></b><b></b><b></b><b></b>'));
 
 const scene = (id, from, to) => (t) => {
-  const el = $(id), on = t >= from - 0.02 && t < to + 0.16;
+  const el = $(id), on = t >= from - 0.02 && t < to + 0.26;
   el.style.display = on ? 'block' : 'none';
-  el.style.opacity = (1 - prog(t, to - 0.04, 0.16)).toFixed(3);
+  el.style.opacity = (1 - prog(t, to - 0.04, 0.26)).toFixed(3);
   return on;
 };
 const scenes = [
-  scene('s0', 0, C.sec1 - 0.06), scene('s1', C.sec1, C.sec2 - 0.3),
-  scene('s2', C.sec2, C.sec3 - 0.3), scene('s3', C.sec3, 1e9),
+  scene('s0', 0, C.sec1 - 0.06), scene('s1', C.sec1, C.sec2 - 0.45),
+  scene('s2', C.sec2, C.sec3 - 0.45), scene('s3', C.sec3, 1e9),
 ];
 
 function setTime(t) {
@@ -240,7 +240,7 @@ function setTime(t) {
     sticker($('kidneyOk'), popScale(t, C.kidneyOk, C.hair - 0.05), 8);
 
     // head A: centre, then slides right when the comparison starts
-    const sp = easeInOut(prog(t, C.split, 0.32));
+    const sp = easeInOut(prog(t, C.split, 0.45));
     $('headA').style.left = '380px';
     sticker($('headA'), popScale(t, C.head), 0, `translateX(${sp * 240}px)`);
     $('headB').style.left = '140px';

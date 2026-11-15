@@ -48,8 +48,8 @@
   // Sticker scale: pops in at tIn (overshoot), shrinks out at tOut.
   K.popScale = (t, tIn, tOut = 1e9) => {
     if (t < tIn) return 0;
-    if (t >= tOut) return 1 - K.easeOut(K.prog(t, tOut, 0.16));
-    return K.back(K.prog(t, tIn, 0.3));
+    if (t >= tOut) return 1 - K.easeOut(K.prog(t, tOut, 0.22));
+    return K.back(K.prog(t, tIn, 0.4));
   };
   K.sticker = (el, sc, rot = 0, extra = '') => {
     el.style.transform = `${extra} scale(${Math.max(0, sc).toFixed(4)}) rotate(${rot}deg)`;
@@ -72,7 +72,7 @@
       groups[gi].words.forEach((i) => {
         const w = words[i], el = els[i];
         if (t < w.start) { el.style.opacity = 0; return; }
-        const p = K.prog(t, w.start, 0.12);
+        const p = K.prog(t, w.start, 0.17);
         el.style.opacity = 1;
         el.style.color = t < w.end + 0.02 ? '#c6ff3d' : '#fff';
         el.style.transform = `translateY(${(1 - K.easeOut(p)) * 26}px) scale(${K.lerp(0.7, 1, K.back(p)).toFixed(4)})`;

@@ -25,7 +25,7 @@
     'بلي كيضر الكلاوي',
     'عند الناس',
     'اللي صحتهم مزيانة،|',
-    'وحتى الناس',
+    'وحتى ناس',
     'لي خايفا من',
     'شعرها لايطيح،|',
     'دراسة اتدارت',
@@ -36,7 +36,7 @@
     'واللي ما خداوهش',
   ];
 
-  const T = KIT.buildTimeline(GROUPS, { tail: 0.45 });
+  const T = KIT.buildTimeline(GROUPS, { unit: 0.0626, tail: 0.5 }) // relaxed pace, ~30s total;
   const { s, e } = T;
 
   const c = {
@@ -44,7 +44,7 @@
     // 1 — القوة
     sec1: s('1'), title1: s('القوة'),
     barbell: s('ملي'), plusA: s('كتزيد'), plusB: s('ريبات'),
-    sessions: [s('كل'), s('حصة'), s('حصة') + 0.16, s('مع'), s('الوقت')],
+    sessions: [s('كل'), s('حصة'), s('حصة') + 0.22, s('مع'), s('الوقت')],
     plate2: s('ترفع'), plate3: s('تقل'), lift: s('كثر'),
     // 2 — العضلات
     sec2: s('2'), title2: s('العضلات'),
@@ -56,7 +56,7 @@
     // 3 — آمن
     sec3: s('3'), title3: s('آمن'),
     study3: s('الدراسات', 1), kidney: s('الكلاوي'), kidneyOk: s('مزيانة'),
-    hair: s('وحتى'), head: s('الناس', 1), worry: s('خايفا'),
+    hair: s('وحتى'), head: s('ناس'), worry: s('خايفا'),
     study: s('دراسة'), scanStart: s('وقاسوا'), scanEnd: e('بالآلات'),
     split: s('وما'), equal: s('فرق'), tookLabel: s('خداه'), notLabel: s('ما', 1), final: s('خداوهش'),
   };
@@ -99,8 +99,8 @@
 
   // Optional per-benefit cuts (each < 15s) for interleaving with camera footage.
   const parts = [
-    { name: 'creatine-02a-strength.mp4', from: 0, to: c.sec2 - 0.32 },
-    { name: 'creatine-02b-muscle.mp4', from: c.sec2 - 0.12, to: c.sec3 - 0.32 },
+    { name: 'creatine-02a-strength.mp4', from: 0, to: c.sec2 - 0.5 },
+    { name: 'creatine-02b-muscle.mp4', from: c.sec2 - 0.12, to: c.sec3 - 0.5 },
     { name: 'creatine-02c-safety.mp4', from: c.sec3 - 0.12, to: T.DURATION },
   ];
 
