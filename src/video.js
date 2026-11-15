@@ -97,18 +97,28 @@
   }
 
   window.seek = seek;
-// Sound-effect cue sheet (no music): whoosh on scene changes, soft pop when a graphic
-  // pops in, chime on the key moments (badges, stamps, big numbers, result tiles).
+// Sound-effect cue sheet (no music). Every animated element, caption change and
+  // scene transition gets exactly one cue, at the moment its animation starts.
   const sfx = [];
+  const KEY = ['stamp', 'badge-big', 'win', 'bignum', 'gauge'];
   scenes.forEach((s, si) => {
     if (si > 0) sfx.push({ t: s.start - 0.1, type: 'whoosh' });
     s.items.forEach((it) => {
       const c = it.node.classList;
-      if (!c.contains('a-pop')) return;
-      const key = ['stamp', 'badge-big', 'win', 'bignum', 'gauge'].some((k) => c.contains(k));
-      sfx.push({ t: Math.max(0, it.tIn), type: key ? 'chime' : 'pop' });
+      const has = (...names) => names.some((n) => c.contains(n));
+      let type;
+      if (it.count !== null) type = 'count';
+      else if (has('a-pop')) type = has(...KEY) ? 'chime' : 'pop';
+      else if (has('a-win')) type = 'chime';
+      else if (has('a-dim')) return;                     // same instant as the winning card's chime
+      else if (has('a-rise', 'a-slide-r', 'a-slide-l')) type = 'swish';
+      else if (has('a-draw')) type = 'draw';
+      else if (has('a-grow-x', 'a-grow-y', 'shrink')) type = has('strike') ? 'draw' : 'fill';
+      else type = 'tick';                                // fades, outlines, lit dots
+      sfx.push({ t: Math.max(0, it.tIn), type, dur: it.dur });
     });
   });
+  captions.forEach((c) => sfx.push({ t: Math.max(0, c.start - 0.05), type: 'caption' }));
   window.VIDEO = { duration, scenes, captions, sfx };
 
   // ---- live preview (skipped when rendering frames) ----

@@ -53,6 +53,14 @@ const url = 'file://' + path.join(root, 'src/index.html') + '?render';
       if (++done % 300 === 0) console.log(`${done}/${total} frames`);
     }
   }));
+  // Coverage check: every animated element, caption and scene change must have a cue.
+  const stats = await first.evaluate(() => {
+    const V = window.VIDEO, n = (t) => V.sfx.filter((c) => c.type === t).length;
+    const els = V.scenes.reduce((a, s) => a + s.items.filter((i) => !i.node.classList.contains('a-dim')).length, 0);
+    return { els, elCues: V.sfx.length - n('whoosh') - n('caption'), caps: V.captions.length, capCues: n('caption'), scenes: V.scenes.length, whoosh: n('whoosh') };
+  });
+  console.log('SFX coverage:', JSON.stringify(stats));
+  if (stats.els !== stats.elCues || stats.caps !== stats.capCues || stats.whoosh !== stats.scenes - 1) throw new Error('SFX coverage incomplete');
   await browser.close();
 
   const audio = opt('audio');
