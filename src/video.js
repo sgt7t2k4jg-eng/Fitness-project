@@ -5,7 +5,6 @@
   const stage = document.getElementById('stage');
   const sceneLayer = document.getElementById('scenes');
   const capEl = document.getElementById('caption');
-  const progEl = document.getElementById('progress');
 
   const clamp = (x) => Math.max(0, Math.min(1, x));
   const outCubic = (p) => 1 - Math.pow(1 - p, 3);
@@ -38,11 +37,6 @@
       return { node, tIn, dur, linear: node.dataset.ease === 'linear',
                count: node.dataset.count ? +node.dataset.count : null, suffix: node.dataset.suffix || '', last: -1 };
     });
-    const seg = document.createElement('i');
-    seg.style.flexGrow = s.end - s.start;
-    seg.appendChild(document.createElement('b'));
-    progEl.appendChild(seg);
-    s.seg = seg.firstChild;
   });
 
   let shownCap = null;
@@ -78,7 +72,6 @@
     let accent = 'lime';
     scenes.forEach((s, si) => {
       const active = t >= s.start && (t < s.end || si === scenes.length - 1);
-      s.seg.style.transform = `scaleX(${clamp((t - s.start) / (s.end - s.start))})`;
       if (!active) { if (s.on) { s.el.style.visibility = 'hidden'; s.on = false; } return; }
       accent = s.accent;
       if (!s.on) { s.el.style.visibility = 'visible'; s.on = true; }
@@ -104,7 +97,19 @@
   }
 
   window.seek = seek;
-  window.VIDEO = { duration, scenes, captions };
+// Sound-effect cue sheet (no music): whoosh on scene changes, soft pop when a graphic
+  // pops in, chime on the key moments (badges, stamps, big numbers, result tiles).
+  const sfx = [];
+  scenes.forEach((s, si) => {
+    if (si > 0) sfx.push({ t: s.start - 0.1, type: 'whoosh' });
+    s.items.forEach((it) => {
+      const c = it.node.classList;
+      if (!c.contains('a-pop')) return;
+      const key = ['stamp', 'badge-big', 'win', 'bignum', 'gauge'].some((k) => c.contains(k));
+      sfx.push({ t: Math.max(0, it.tIn), type: key ? 'chime' : 'pop' });
+    });
+  });
+  window.VIDEO = { duration, scenes, captions, sfx };
 
   // ---- live preview (skipped when rendering frames) ----
   const rendering = new URLSearchParams(location.search).has('render');

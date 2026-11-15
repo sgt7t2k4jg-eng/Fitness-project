@@ -1,18 +1,19 @@
 // Renders the video frame by frame with headless Chromium, then encodes with ffmpeg.
-//   node tools/render.js                      -> out/carbs.mp4 (silent)
-//   node tools/render.js --audio voice.mp3    -> muxes the voiceover in
+//   node tools/render.js                      -> Exports/carbs.mp4 (sound effects only, no music)
+//   node tools/render.js --audio voice.mp3    -> mixes the voiceover over the sound effects
 //   node tools/render.js --shots 3,12.5,40    -> PNG stills only (for review)
 const { chromium } = require('playwright');
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
+const { writeSfxWav } = require('./sfx.js');
 const path = require('path');
 
 const args = process.argv.slice(2);
 const opt = (name) => { const i = args.indexOf('--' + name); return i >= 0 ? args[i + 1] : null; };
 const FPS = 30, WORKERS = 4;
 const root = path.join(__dirname, '..');
-const outDir = path.join(root, 'out');
+const outDir = path.join(root, 'Exports');
 const url = 'file://' + path.join(root, 'src/index.html') + '?render';
 
 (async () => {
@@ -41,6 +42,7 @@ const url = 'file://' + path.join(root, 'src/index.html') + '?render';
   const frames = fs.mkdtempSync(path.join(os.tmpdir(), 'carbs-frames-'));
   const first = await open();
   const duration = await first.evaluate(() => window.VIDEO.duration);
+  const cues = await first.evaluate(() => window.VIDEO.sfx);
   const total = Math.ceil(duration * FPS);
   const pages = [first, ...(await Promise.all(Array.from({ length: WORKERS - 1 }, open)))];
   let done = 0;
@@ -54,9 +56,13 @@ const url = 'file://' + path.join(root, 'src/index.html') + '?render';
   await browser.close();
 
   const audio = opt('audio');
+  const sfxWav = path.join(frames, 'sfx.wav');
+  writeSfxWav(sfxWav, cues, duration);
   const out = path.join(outDir, 'carbs.mp4');
   execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', path.join(frames, 'f%05d.jpg'),
-    ...(audio ? ['-i', audio, '-c:a', 'aac', '-b:a', '192k'] : []),
+    '-i', sfxWav,
+    ...(audio ? ['-i', audio, '-filter_complex', '[1:a][2:a]amix=inputs=2:duration=first:normalize=0[a]', '-map', '0:v', '-map', '[a]'] : []),
+    '-c:a', 'aac', '-b:a', '192k',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: 'inherit' });
   fs.rmSync(frames, { recursive: true, force: true });
   console.log(`Wrote ${out} (${duration.toFixed(1)}s, ${total} frames)`);

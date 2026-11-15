@@ -5,9 +5,9 @@ built as an HTML animation and rendered to MP4.
 
 | File | What it is |
 |---|---|
-| `out/carbs.mp4` | The rendered video (silent — add the voiceover on top) |
-| `out/captions.srt` | The captions as a subtitle file |
-| `out/storyboard.md` | Scene-by-scene timings, visuals and captions |
+| `Exports/carbs.mp4` | The rendered video: sound effects only, no music (add the voiceover on top) |
+| `Exports/captions.srt` | The captions as a subtitle file |
+| `Exports/storyboard.md` | Scene-by-scene timings, visuals and captions |
 | `script/voiceover.txt` | The voiceover script, exactly as written |
 | `src/scenes.js` | The scenes: caption breaks and motion graphics |
 | `src/index.html` | Live preview — open in a browser, space to play, drag to scrub |
@@ -22,8 +22,8 @@ Graphic labels use only words that appear in the script.
 
 ```
 npm install          # Playwright (headless Chromium); ffmpeg must be installed
-npm run render       # verify + storyboard/SRT + out/carbs.mp4
-node tools/render.js --audio voiceover.mp3    # same, with the voiceover muxed in
+npm run render       # verify + storyboard/SRT + Exports/carbs.mp4
+node tools/render.js --audio voiceover.mp3    # same, with the voiceover mixed over the sound effects
 ```
 
 ## Timing

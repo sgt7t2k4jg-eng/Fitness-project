@@ -1,11 +1,11 @@
-// Writes out/captions.srt and out/storyboard.md from the same timeline the video uses.
+// Writes Exports/captions.srt and Exports/storyboard.md from the same timeline the video uses.
 const fs = require('fs');
 const path = require('path');
 require('../src/timeline.js');
 require('../src/scenes.js');
 
 const { scenes, captions, duration } = globalThis.Timeline.build(globalThis.SCENES);
-const out = path.join(__dirname, '../out');
+const out = path.join(__dirname, '../Exports');
 fs.mkdirSync(out, { recursive: true });
 
 const pad = (n, l = 2) => String(n).padStart(l, '0');
