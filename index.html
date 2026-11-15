@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Fitness Reel</title>
+<link rel="stylesheet" href="node_modules/@fontsource/cairo/700.css">
+<link rel="stylesheet" href="node_modules/@fontsource/cairo/900.css">
+<link rel="stylesheet" href="node_modules/@fontsource/lalezar/400.css">
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden;
+           transform-origin: 0 0; background: #FF6B2B; }
+  #stage * { box-sizing: border-box; }
+  #hud { position: fixed; right: 12px; bottom: 12px; color: #fff; font: 14px monospace; opacity: .7; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud"></div>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
