@@ -8,7 +8,6 @@ import numpy as np
 SR = 48000
 tl = json.load(open(sys.argv[1]))
 out_path = sys.argv[2]
-C = tl["cues"]
 N = int(SR * tl["DURATION"])
 mix = np.zeros(N + SR)
 rng = np.random.default_rng(7)
@@ -96,29 +95,33 @@ def rep(i):
     return (np.sin(2 * np.pi * f * t) + .4 * np.sin(2 * np.pi * f * 2.7 * t)) * np.exp(-t * 70)
 
 
+def scan(dur):
+    t = tt(dur)
+    gate = (np.sin(2 * np.pi * 13 * t) > 0).astype(float)
+    return np.sin(2 * np.pi * (1300 + 500 * t / dur) * t) * lowpass(gate, np.full(len(t), 400.0)) * .8
+
+
+SOUNDS = {
+    "tick": lambda e: tick(e.get("p", 1.0)),
+    "pop": lambda e: pop(e.get("p", 1.0)),
+    "whoosh": lambda e: whoosh(e.get("dur", 0.36)),
+    "ding": lambda e: ding(e.get("p", 1318.5)),
+    "thud": lambda e: thud(),
+    "bonk": lambda e: bonk(),
+    "drain": lambda e: drain(e["dur"]),
+    "fill": lambda e: fill(e["dur"]),
+    "rep": lambda e: rep(e.get("p", 0)),
+    "scan": lambda e: scan(e["dur"]),
+}
+
 # Caption transitions: a soft tick on every word, a touch brighter on each new caption line.
 first_words = {g["words"][0] for g in tl["groups"]}
 for i, w in enumerate(tl["words"]):
     add(tick(1.25 if i in first_words else 1.0), w["start"], .16 if i in first_words else .1)
 
-add(pop(1.0), C["dumbbell"], .7)
-add(pop(1.2), C["muscle"], .7)
-add(pop(1.45), C["bolt"], .7)
-add(drain(C["drainEnd"] - C["drainStart"]), C["drainStart"], .2)
-add(thud(), C["empty"], .85)
-add(whoosh(), C["scene2"] - .1, .5)
-add(pop(1.1), C["scene2"], .75)
-add(fill(C["fillEnd"] - C["fillStart"]), C["fillStart"], .22)
-add(ding(), C["full"], .42)
-add(whoosh(), C["scene3"] - .08, .5)
-for i, r in enumerate(C["reps"]):
-    add(rep(i), r, .42)
-add(bonk(), C["stop"], .6)
-add(whoosh(0.24), C["stopOut"] - .04, .4)
-add(pop(1.3), C["plus1"], .8)
-add(ding(1568.0), C["plus1"], .25)
-add(pop(1.6), C["plus2"], .8)
-add(ding(2093.0), C["plus2"], .4)
+# Visual cues (pops, stickers, transitions) listed by the clip's timeline.
+for ev in tl["sfx"]:
+    add(SOUNDS[ev["type"]](ev), max(0, ev["at"]), ev.get("gain", 1.0))
 
 mix = mix[:N]
 fade = int(.05 * SR)

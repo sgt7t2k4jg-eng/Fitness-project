@@ -80,7 +80,29 @@
     plus2: s(34), // جوج
   };
 
-  const TL = { FPS, DURATION, words, groups, cues };
+  // SFX cue list, consumed by sfx.py (word ticks are added automatically).
+  const c = cues;
+  const sfx = [
+    { type: 'pop', at: c.dumbbell, gain: 0.7, p: 1.0 },
+    { type: 'pop', at: c.muscle, gain: 0.7, p: 1.2 },
+    { type: 'pop', at: c.bolt, gain: 0.7, p: 1.45 },
+    { type: 'drain', at: c.drainStart, gain: 0.2, dur: c.drainEnd - c.drainStart },
+    { type: 'thud', at: c.empty, gain: 0.85 },
+    { type: 'whoosh', at: c.scene2 - 0.1, gain: 0.5, dur: 0.36 },
+    { type: 'pop', at: c.scene2, gain: 0.75, p: 1.1 },
+    { type: 'fill', at: c.fillStart, gain: 0.22, dur: c.fillEnd - c.fillStart },
+    { type: 'ding', at: c.full, gain: 0.42, p: 1318.5 },
+    { type: 'whoosh', at: c.scene3 - 0.08, gain: 0.5, dur: 0.36 },
+    ...c.reps.map((at, i) => ({ type: 'rep', at, gain: 0.42, p: i })),
+    { type: 'bonk', at: c.stop, gain: 0.6 },
+    { type: 'whoosh', at: c.stopOut - 0.04, gain: 0.4, dur: 0.24 },
+    { type: 'pop', at: c.plus1, gain: 0.8, p: 1.3 },
+    { type: 'ding', at: c.plus1, gain: 0.25, p: 1568.0 },
+    { type: 'pop', at: c.plus2, gain: 0.8, p: 1.6 },
+    { type: 'ding', at: c.plus2, gain: 0.4, p: 2093.0 },
+  ];
+
+  const TL = { FPS, DURATION, OUT: 'creatine-01-energy-tank.mp4', words, groups, cues, sfx };
   if (typeof module !== 'undefined' && module.exports) module.exports = TL;
   else root.TL = TL;
 })(typeof window !== 'undefined' ? window : globalThis);

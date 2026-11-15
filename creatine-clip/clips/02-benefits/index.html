@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Creatine — benefits</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<style>
+  .scene { left: 0; top: 0; width: 1080px; height: 1160px; }
+
+  /* intro + section headers */
+  .num { width: 132px; height: 132px; border-radius: 50%; background: var(--lime); color: var(--ink);
+         font-size: 88px; line-height: 1; padding-bottom: 6px; }
+  .intro { top: 560px; width: 200px; height: 200px; font-size: 130px; }
+  .hnum { top: 170px; }
+  .htitle { top: 150px; height: 172px; font-size: 112px; line-height: 172px; white-space: nowrap; text-align: center; }
+
+  /* 1 — barbell */
+  #barbell { left: 130px; top: 500px; width: 820px; height: 300px; }
+  #bar { left: 0; top: 139px; width: 820px; height: 22px; border-radius: 11px; background: #cfd5dd; }
+  .plate { border-radius: 16px; background: #fff; }
+  .plate.gain { background: var(--lime); }
+  .check { top: 860px; width: 130px; height: 130px; border-radius: 34px; background: #fff; }
+
+  /* 2 — studies + comparison */
+  .paper { left: 430px; top: 520px; width: 220px; height: 290px; border-radius: 26px; background: #fff;
+           box-shadow: 0 14px 0 rgba(0,0,0,.45); padding: 34px 28px; }
+  .paper b { display: block; height: 16px; border-radius: 8px; background: #c9ced6; margin-bottom: 22px; }
+  .paper b:first-child { width: 60%; background: var(--ink); }
+  .paper b:last-child { width: 75%; background: var(--lime); height: 46px; border-radius: 12px; margin-top: 34px; }
+  .col { top: 480px; width: 200px; height: 520px; border: 8px solid rgba(255,255,255,.3); border-radius: 44px; overflow: hidden; }
+  .col i { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: #fff; }
+  .col i.extra { background: var(--lime); }
+  #dash { left: 250px; top: 684px; width: 590px; height: 0; border-top: 8px dashed rgba(255,255,255,.75); transform-origin: 0 50%; }
+  #kilo { left: 560px; top: 340px; width: 360px; height: 124px; border-radius: 62px; background: var(--lime); color: var(--ink);
+          font-size: 68px; gap: 16px; direction: rtl; padding-bottom: 8px; }
+  #kilo span { direction: ltr; font-size: 76px; }
+  .label { top: 1030px; }
+
+  /* 3 — safety */
+  #kidneyCard { left: 340px; top: 440px; width: 400px; height: 400px; border-radius: 50%; background: #fff; }
+  .ok { width: 170px; height: 170px; border-radius: 50%; background: var(--lime); border: 10px solid var(--ink); box-shadow: none; }
+  .head { top: 480px; width: 320px; height: 360px; }
+  #worry { left: 250px; top: 420px; width: 170px; height: 170px; border-radius: 50%; background: #ffd23d; color: var(--ink);
+           font-size: 120px; line-height: 1; padding-bottom: 14px; }
+  #lens { left: 600px; top: 620px; width: 240px; height: 240px; }
+  #scanline { left: 370px; top: 0; width: 340px; height: 10px; border-radius: 5px; background: var(--lime);
+              box-shadow: 0 0 30px 8px rgba(198,255,61,.6); }
+  #equal { left: 455px; top: 575px; width: 170px; height: 170px; border-radius: 50%; background: var(--lime); color: var(--ink);
+           font-size: 130px; line-height: 1; padding-bottom: 18px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+
+  <!-- intro: 1 2 3 -->
+  <div id="s0" class="abs scene">
+    <div class="abs sticker num intro" style="left: 710px">1</div>
+    <div class="abs sticker num intro" style="left: 440px">2</div>
+    <div class="abs sticker num intro" style="left: 170px">3</div>
+  </div>
+
+  <!-- section headers -->
+  <div id="heads"></div>
+
+  <!-- 1 — القوة -->
+  <div id="s1" class="abs scene">
+    <div id="barbell" class="abs">
+      <div id="bar" class="abs"></div>
+    </div>
+    <div id="plusA" class="abs sticker plus" style="left: 150px; top: 350px">+1</div>
+    <div id="plusB" class="abs sticker plus" style="left: 350px; top: 330px">+2</div>
+    <div id="checks"></div>
+    <div id="sparks1"></div>
+  </div>
+
+  <!-- 2 — العضلات -->
+  <div id="s2" class="abs scene">
+    <div id="papers"></div>
+    <div id="colA" class="abs col" style="left: 640px"><i></i><i class="extra"></i></div>
+    <div id="colB" class="abs col" style="left: 240px"><i></i></div>
+    <div id="dash" class="abs"></div>
+    <div id="kilo" class="abs sticker">≈<span>+1</span>كيلو</div>
+    <div id="labelA" class="abs sticker pill lime label" style="left: 590px; width: 300px">الكرياتين</div>
+    <div id="labelB" class="abs sticker pill label" style="left: 190px; width: 300px">ماكيخدش</div>
+  </div>
+
+  <!-- 3 — آمن -->
+  <div id="s3" class="abs scene">
+    <div id="study3" class="abs paper" style="left: 120px; top: 470px"><b></b><b></b><b></b><b></b><b></b></div>
+    <div id="kidneyCard" class="abs sticker">
+      <svg width="290" height="250" viewBox="0 0 290 250" fill="#ff6b5c">
+        <path id="kid" d="M88 14C38 14 8 62 10 122c2 62 40 112 86 112 34 0 44-28 30-56-12-24-12-40 2-64 16-28 14-62-6-84-8-10-20-16-34-16z"/>
+        <use href="#kid" transform="translate(290 0) scale(-1 1)"/>
+      </svg>
+    </div>
+    <div id="kidneyOk" class="abs sticker ok" style="left: 640px; top: 700px">
+      <svg width="96" height="96" viewBox="0 0 48 48"><path d="M8 25l11 11L40 13" fill="none" stroke="#0b0d10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <svg id="headA" class="abs head" viewBox="0 0 320 360"><use href="#headArt"/></svg>
+    <svg id="headB" class="abs head" viewBox="0 0 320 360"><use href="#headArt"/></svg>
+    <div id="worry" class="abs sticker">؟</div>
+    <div id="scanline" class="abs"></div>
+    <svg id="lens" class="abs" viewBox="0 0 120 120">
+      <circle cx="50" cy="50" r="36" fill="rgba(198,255,61,.18)" stroke="#fff" stroke-width="12"/>
+      <path d="M78 78l30 30" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+    </svg>
+    <div id="equal" class="abs sticker">=</div>
+    <div id="tookLabel" class="abs sticker pill lime label" style="left: 640px; top: 890px; width: 280px">خداه</div>
+    <div id="notLabel" class="abs sticker pill label" style="left: 140px; top: 890px; width: 320px">ما خداوهش</div>
+    <div id="sparks3"></div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <g id="headArt">
+        <rect x="118" y="270" width="84" height="80" rx="26" fill="#e7eaee"/>
+        <circle cx="160" cy="200" r="112" fill="#f6f7f9"/>
+        <path d="M44 214C10 96 86 22 170 26c92-6 150 76 106 188-8-52-34-84-64-92-34 22-104 26-134 8-20 16-30 44-34 84z" fill="#c6ff3d"/>
+        <circle cx="122" cy="212" r="12" fill="#0b0d10"/><circle cx="198" cy="212" r="12" fill="#0b0d10"/>
+        <path d="M124 254c20 20 52 20 72 0" fill="none" stroke="#0b0d10" stroke-width="10" stroke-linecap="round"/>
+      </g>
+    </defs>
+  </svg>
+
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, DURATION } = TL;
+const { clamp, prog, lerp, easeOut, easeInOut, back, popScale, sticker, rnd } = KIT;
+const $ = (id) => document.getElementById(id);
+const mk = (parent, cls, html = '') => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; $(parent).appendChild(d); return d; };
+const updateCaptions = KIT.captions($('caption'), TL);
+const SPARK = '<svg viewBox="0 0 40 40"><path d="M20 0c2 12 6 16 20 20-14 4-18 8-20 20-2-12-6-16-20-20C14 16 18 12 20 0z" fill="#c6ff3d"/></svg>';
+const CHECK = '<svg width="78" height="78" viewBox="0 0 48 48"><path d="M8 25l11 11L40 13" fill="none" stroke="#0b0d10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+// ---- headers: number badge + title (RTL: number on the right) ----
+const TITLES = ['القوة', 'العضلات', 'آمن'];
+const TITLE_W = [330, 480, 250];
+const heads = TITLES.map((title, i) => {
+  const total = 132 + 36 + TITLE_W[i], right = (1080 - total) / 2;
+  const num = mk('heads', 'abs sticker num hnum', String(i + 1));
+  num.style.left = 1080 - right - 132 + 'px';
+  const tt = mk('heads', 'abs htitle', title);
+  tt.style.left = right + 'px'; tt.style.width = TITLE_W[i] + 'px';
+  return { num, tt, at: C['sec' + (i + 1)], titleAt: C['title' + (i + 1)], out: i < 2 ? C['sec' + (i + 2)] - 0.3 : 1e9 };
+});
+
+// ---- 1: barbell plates (pairs, inner -> outer) + session checks ----
+const PLATES = [[150, 54, 270, false], [88, 48, 220, true], [32, 42, 170, true]].map(([x, w, h, gain]) =>
+  [x, 820 - x - w].map((left) => {
+    const d = mk('barbell', 'abs plate' + (gain ? ' gain' : ''));
+    Object.assign(d.style, { left: left + 'px', top: 150 - h / 2 + 'px', width: w + 'px', height: h + 'px' });
+    return d;
+  }));
+const checks = C.sessions.map((_, i) => { const d = mk('checks', 'abs sticker check', CHECK); d.style.left = 1080 - 155 - 130 - i * 160 + 'px'; return d; });
+const mkSparks = (parent, pts) => pts.map(([x, y]) => { const d = mk(parent, 'abs spark', SPARK); d._x = x; d._y = y; return d; });
+const sparks1 = mkSparks('sparks1', [[170, 470], [900, 500], [230, 800], [860, 790], [540, 400]]);
+const sparks3 = mkSparks('sparks3', [[200, 430], [880, 450], [540, 470], [150, 900], [930, 880]]);
+const sparkle = (els, t, at) => els.forEach((d, i) => {
+  const p = prog(t, at + i * 0.04, 0.5);
+  const sc = p > 0 && p < 1 ? Math.sin(p * Math.PI) * (1 + rnd(i) * 0.6) : 0;
+  d.style.opacity = sc > 0 ? 1 : 0;
+  d.style.transform = `translate(${d._x - 35}px, ${d._y - 35}px) scale(${sc.toFixed(3)}) rotate(${p * 90}deg)`;
+});
+
+// ---- 2: study papers ----
+const papers = C.papers.map((_, i) => mk('papers', 'abs paper', '<b></b><b></b><b></b><b></b><b></b>'));
+
+const scene = (id, from, to) => (t) => {
+  const el = $(id), on = t >= from - 0.02 && t < to + 0.16;
+  el.style.display = on ? 'block' : 'none';
+  el.style.opacity = (1 - prog(t, to - 0.04, 0.16)).toFixed(3);
+  return on;
+};
+const scenes = [
+  scene('s0', 0, C.sec1 - 0.06), scene('s1', C.sec1, C.sec2 - 0.3),
+  scene('s2', C.sec2, C.sec3 - 0.3), scene('s3', C.sec3, 1e9),
+];
+
+function setTime(t) {
+  updateCaptions(t);
+
+  // intro badges
+  if (scenes[0](t)) document.querySelectorAll('.intro').forEach((el, i) => sticker(el, popScale(t, C.intro + i * 0.12), [-8, 5, -5][i]));
+
+  heads.forEach((h, i) => {
+    sticker(h.num, popScale(t, h.at, h.out), -6);
+    const p = popScale(t, h.titleAt, h.out);
+    h.tt.style.opacity = p > 0.01 ? 1 : 0;
+    h.tt.style.transform = `scale(${Math.max(0, p).toFixed(4)})`;
+  });
+
+  // ---------- 1: strength ----------
+  if (scenes[1](t)) {
+    const lift = easeOut(prog(t, C.lift, 0.3));
+    const bb = popScale(t, C.barbell);
+    $('barbell').style.transform = `translateY(${-lift * 70 + Math.sin(prog(t, C.lift, 0.5) * Math.PI) * -20}px) scale(${Math.max(0, bb).toFixed(4)})`;
+    $('barbell').style.opacity = bb > 0.01 ? 1 : 0;
+    [0, C.plate2, C.plate3].forEach((at, i) => PLATES[i].forEach((d) => {
+      const p = i === 0 ? 1 : back(prog(t, at, 0.26));
+      d.style.transform = `scaleY(${Math.max(0, p).toFixed(4)})`;
+      d.style.opacity = i === 0 || t >= at ? 1 : 0;
+    }));
+    sticker($('plusA'), popScale(t, C.plusA), -8);
+    sticker($('plusB'), popScale(t, C.plusB), 7);
+    checks.forEach((d, i) => sticker(d, popScale(t, C.sessions[i]), i % 2 ? 4 : -4));
+    sparkle(sparks1, t, C.lift + 0.05);
+  }
+
+  // ---------- 2: muscle ----------
+  if (scenes[2](t)) {
+    papers.forEach((d, i) => {
+      const k = i - 2;
+      sticker(d, popScale(t, C.papers[i], C.compare - 0.06), k * 11, `translate(${-k * 105}px, ${Math.abs(k) * 26}px)`);
+    });
+    const colIn = back(prog(t, C.compare + 0.05, 0.3));
+    ['colA', 'colB'].forEach((id) => { $(id).style.transform = `scale(${Math.max(0, colIn).toFixed(4)})`; $(id).style.opacity = t >= C.compare + 0.05 ? 1 : 0; });
+    const base = 60 * easeInOut(prog(t, C.growBoth, C.growBothEnd - C.growBoth));
+    const extra = 25 * easeInOut(prog(t, C.growExtra, C.growExtraEnd - C.growExtra));
+    const [aBase, aExtra] = $('colA').children;
+    aBase.style.height = base + '%';
+    aExtra.style.bottom = base + '%'; aExtra.style.height = extra + '%';
+    $('colB').firstChild.style.height = base + '%';
+    $('dash').style.transform = `scaleX(${easeOut(prog(t, C.growExtra, 0.25)).toFixed(4)})`;
+    $('dash').style.opacity = t >= C.growExtra ? 1 : 0;
+    sticker($('kilo'), popScale(t, C.kilo), -5);
+    sticker($('labelA'), popScale(t, C.labelA), -3);
+    sticker($('labelB'), popScale(t, C.labelB), 3);
+  }
+
+  // ---------- 3: safety ----------
+  if (scenes[3](t)) {
+    sticker($('study3'), popScale(t, C.study3, C.hair - 0.05), -9);
+    sticker($('kidneyCard'), popScale(t, C.kidney, C.hair - 0.05), -4);
+    sticker($('kidneyOk'), popScale(t, C.kidneyOk, C.hair - 0.05), 8);
+
+    // head A: centre, then slides right when the comparison starts
+    const sp = easeInOut(prog(t, C.split, 0.32));
+    $('headA').style.left = '380px';
+    sticker($('headA'), popScale(t, C.head), 0, `translateX(${sp * 240}px)`);
+    $('headB').style.left = '140px';
+    sticker($('headB'), popScale(t, C.split + 0.08));
+    sticker($('worry'), popScale(t, C.worry, C.study), -10);
+
+    sticker($('lens'), popScale(t, C.scanStart, C.split - 0.04), 8 + Math.sin(t * 7) * 5);
+    const scanOn = t >= C.scanStart + 0.1 && t < C.scanEnd;
+    const sweep = 0.5 - 0.5 * Math.cos(prog(t, C.scanStart + 0.1, C.scanEnd - C.scanStart - 0.1) * Math.PI * 3);
+    $('scanline').style.opacity = scanOn ? 1 : 0;
+    $('scanline').style.transform = `translateY(${lerp(500, 720, sweep)}px)`;
+
+    const eq = popScale(t, C.equal);
+    sticker($('equal'), eq * (1 + 0.12 * Math.sin(prog(t, C.final, 0.4) * Math.PI)));
+    sticker($('tookLabel'), popScale(t, C.tookLabel), -3);
+    sticker($('notLabel'), popScale(t, C.notLabel), 3);
+    sparkle(sparks3, t, C.final);
+  }
+}
+
+KIT.boot(setTime, DURATION);
+</script>
+</body>
+</html>

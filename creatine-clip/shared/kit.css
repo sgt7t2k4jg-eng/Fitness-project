@@ -1,0 +1,32 @@
+@font-face { font-family: Cairo; font-weight: 700; src: url(../fonts/cairo-arabic-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Cairo; font-weight: 900; src: url(../fonts/cairo-arabic-900-normal.woff2) format('woff2'); }
+@font-face { font-family: Cairo; font-weight: 900; src: url(../fonts/cairo-latin-900-normal.woff2) format('woff2'); unicode-range: U+0000-00FF; }
+:root { --lime: #c6ff3d; --ink: #0b0d10; --red: #ff4632; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+#stage {
+  position: relative; width: 1080px; height: 1920px; overflow: hidden;
+  font-family: Cairo, sans-serif; font-weight: 900; color: #fff;
+  background:
+    radial-gradient(900px 900px at 50% 36%, #1c222b 0%, transparent 70%),
+    linear-gradient(180deg, #0e1116 0%, #07080a 100%);
+}
+#grid {
+  position: absolute; inset: 0; opacity: .5;
+  background-image: radial-gradient(rgba(255,255,255,.07) 2px, transparent 2.5px);
+  background-size: 54px 54px;
+}
+.abs { position: absolute; will-change: transform, opacity; }
+.sticker { display: flex; align-items: center; justify-content: center; border-radius: 40px;
+           box-shadow: 0 16px 0 rgba(0,0,0,.45); }
+.plus { width: 170px; height: 120px; border-radius: 36px; background: var(--lime); color: var(--ink);
+        font-size: 84px; direction: ltr; line-height: 1; }
+.pill { height: 96px; padding: 0 40px 8px; border-radius: 48px; font-size: 54px; white-space: nowrap;
+        background: #fff; color: var(--ink); }
+.pill.lime { background: var(--lime); }
+.spark { width: 70px; height: 70px; }
+#caption { left: 40px; top: 1180px; width: 1000px; height: 330px; display: flex; flex-wrap: wrap;
+           align-content: center; justify-content: center; gap: 0 30px; direction: rtl;
+           font-size: 116px; line-height: 1.35; }
+#caption span { display: inline-block; white-space: nowrap;
+                text-shadow: 0 8px 0 rgba(0,0,0,.55), 0 0 30px rgba(0,0,0,.6); }

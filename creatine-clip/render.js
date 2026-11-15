@@ -1,15 +1,20 @@
-// Renders index.html frame-by-frame with headless Chromium, synthesises the SFX track,
-// and muxes both into Exports/creatine-01-energy-tank.mp4.
-// Usage: node creatine-clip/render.js   (needs playwright, ffmpeg, python3 + numpy)
+// Renders a clip's index.html frame-by-frame with headless Chromium, synthesises its SFX
+// track, and muxes both into Exports/<TL.OUT> (plus optional per-part cuts from TL.parts).
+// Usage: node creatine-clip/render.js <clip>   e.g. 02-benefits
+// Needs playwright, ffmpeg, python3 + numpy.
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
-const TL = require('./timeline.js');
+
+const CLIP = process.argv[2];
+if (!CLIP) { console.error('usage: node render.js <clip folder name under clips/>'); process.exit(1); }
+const CLIP_DIR = path.join(__dirname, 'clips', CLIP);
+const TL = require(path.join(CLIP_DIR, 'timeline.js'));
 
 const ROOT = path.resolve(__dirname, '..');
-const BUILD = path.join(__dirname, 'build');
-const OUT = path.join(ROOT, 'Exports', 'creatine-01-energy-tank.mp4');
+const BUILD = path.join(__dirname, 'build', CLIP);
+const OUT = path.join(ROOT, 'Exports', TL.OUT);
 
 (async () => {
   fs.mkdirSync(BUILD, { recursive: true });
@@ -23,7 +28,7 @@ const OUT = path.join(ROOT, 'Exports', 'creatine-01-energy-tank.mp4');
   const frames = Math.round(TL.DURATION * TL.FPS);
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
-  await page.goto('file://' + path.join(__dirname, 'index.html'));
+  await page.goto('file://' + path.join(CLIP_DIR, 'index.html'));
   await page.evaluate(() => window.ready);
 
   const ff = spawn('ffmpeg', [
@@ -44,5 +49,19 @@ const OUT = path.join(ROOT, 'Exports', 'creatine-01-energy-tank.mp4');
   ff.stdin.end();
   await new Promise((res, rej) => ff.on('close', (c) => (c ? rej(new Error('ffmpeg exit ' + c)) : res())));
   await browser.close();
-  console.log(`wrote ${OUT} (${frames} frames, ${TL.DURATION}s)`);
+  console.log(`wrote ${OUT} (${frames} frames, ${TL.DURATION.toFixed(2)}s)`);
+
+  // Optional cuts (frame-accurate re-encode, tiny audio fades at the cut points).
+  for (const part of TL.parts || []) {
+    const from = Math.round(part.from * TL.FPS) / TL.FPS;
+    const dur = Math.round((part.to - part.from) * TL.FPS) / TL.FPS;
+    const dst = path.join(ROOT, 'Exports', part.name);
+    execFileSync('ffmpeg', [
+      '-y', '-loglevel', 'error', '-i', OUT, '-ss', String(from), '-t', String(dur),
+      '-af', `afade=t=in:st=${from}:d=0.03,afade=t=out:st=${from + dur - 0.06}:d=0.06`,
+      '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p',
+      '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', dst,
+    ], { stdio: 'inherit' });
+    console.log(`wrote ${dst} (${dur.toFixed(2)}s)`);
+  }
 })();
