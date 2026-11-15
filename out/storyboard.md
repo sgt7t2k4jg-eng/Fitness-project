@@ -1,0 +1,26 @@
+# Storyboard — الكربوهيدرات
+
+Format: 1080×1920 (9:16), 30 fps · Length: 1:49.4 · 18 scenes · 82 captions
+
+Timings are paced for a brisk read and follow the words: every graphic is cued to the word it illustrates.
+
+| # | Time | Theme | Visual / motion | Captions (voiceover, word for word) |
+|---|---|---|---|---|
+| 1 | 0:00.0 – 0:06.6 | Lime | Stopwatch ring sweeps for the whole scene. Title slams in, then the three questions slide in one by one as they are spoken. | `0:00.3` فدقيقة غادي تفهم<br>`0:01.3` شنو هي الكربوهيدرات،<br>`0:02.6` شنو كتدير فجسمكً<br>`0:03.6` وشكون فيهم اللي خاصك تاكل<br>`0:05.1` او لي تراكز عليه |
+| 2 | 0:06.6 – 0:14.4 | Lime | Six food cards pop in on each word, all get the same outline, then merge under one big "كارب" badge. | `0:06.8` الكربوهيدرات بي خلاصة هيا<br>`0:08.4` خبز بطاطا روز<br>`0:09.2` عدس ديسر سكر<br>`0:10.1` هدو كاملين بنسبة جسم ديالك<br>`0:11.7` راه كارب<br>`0:12.3` حيت كاعما كيفرق بيناتهم مزيان |
+| 3 | 0:14.4 – 0:20.2 | Lime | Food breaks down into small glucose hexagons; a fuel bar then fills up. | `0:14.7` ملي كتاكلها،<br>`0:15.5` جسمك كيردها سكر صغير<br>`0:16.8` سميتو الجلوكوز.<br>`0:18.0` وهادا هو ليصانص ديالك<br>`0:19.3` باش يخدم |
+| 4 | 0:20.2 – 0:23.8 | Lime | A little glucose is used right away; the rest fills two storage tanks: muscles and liver. | `0:20.5` جسم كياخد منو شوية<br>`0:21.7` والباقي كيتخبا<br>`0:22.5` فالعضلاّت والكبدة |
+| 5 | 0:23.8 – 0:28.6 | Lime | Lifter pumping with energy rings; the muscle store bar drains as it powers the lift. | `0:24.0` وهادك لي تخبا في عضلات<br>`0:25.5` هو اللي كتخدم بيه فالصال<br>`0:27.1` فاش كتبغي تهز تقل |
+| 6 | 0:28.6 – 0:31.9 | Lime | Three-step chain builds top to bottom: carb → glucose → energy. | `0:28.8` يعني كارب كان في لول<br>`0:30.2` تحول غليكوز<br>`0:30.9` عطانا طاقة |
+| 7 | 0:31.9 – 0:33.6 | Lime | Chapter card. Title, then two colour-coded cards split apart (coral = fast, mint = slow). | `0:32.1` الأنواع<br>`0:32.6` كاينين جوج |
+| 8 | 0:33.6 – 0:41.4 | Coral | Coral theme. Four fast-carb chips, then a blood-sugar curve that spikes and crashes; "doesn't fill you up" stamp. | `0:33.9` النوع السريع:<br>`0:34.8` السكر، المونادا،<br>`0:35.9` العصير، الحلويات.<br>`0:37.2` هد نوع كيدخل للدم بالزربة<br>`0:38.8` وكيخرج بالزربة<br>`0:39.7` دغيا كيتقدا<br>`0:40.4` وما كيشبعش |
+| 9 | 0:41.4 – 0:51.5 | Mint | Mint theme. Eight slow-carb chips, a fibre badge, then a long gentle energy curve; "keeps you full" stamp. | `0:41.7` نوع تاني<br>`0:42.2` البطيء:<br>`0:42.8` خبز الشعير ولا القمح الكامل،<br>`0:44.6` الرز، البطاطا،<br>`0:45.7` العدس، اللوبيا،<br>`0:46.8` الخضرة، الفواكه.<br>`0:48.1` هادو فيهم الألياف،<br>`0:49.3` كيعطيوك طاقة مدة طويلة<br>`0:50.7` وكيشبعوك |
+| 10 | 0:51.5 – 0:54.8 | Mint | Fast vs slow side by side; the slow card grows and gets the "healthy" tick while the fast card fades back. | `0:51.8` واخا شكون مزيان فيهم<br>`0:53.0` واخا باين شكون لي صحي |
+| 11 | 0:54.8 – 1:01.0 | Lime | WHO source card, a fan of study papers stacking up, then a big counter running to 40 years. | `0:55.1` هد دراسة طلبتها<br>`0:56.0` منظمة الصحة العالمية.<br>`0:57.5` الباحثين جمعو الدراسات<br>`0:58.8` اللي تدارت تقريباً 40 عام، |
+| 12 | 1:01.0 – 1:12.3 | Lime | Two groups compared; the high-fibre group lights up, then the heart and diabetes risk bars shrink. | `1:01.3` وشافو الناس اللي كياكلو<br>`1:02.7` بزاف ديال الألياف والحبوب الكاملة،<br>`1:04.8` والناس اللي كياكلو قليل.<br>`1:06.5` لقاو بلي اللي كياكلو أكثر،<br>`1:08.3` عندهم خطر أقل<br>`1:09.2` ديال بزاف ديال الأمراض<br>`1:10.6` بحال القلب والسكري. |
+| 13 | 1:12.3 – 1:19.0 | Lime | Ring gauge counts up to 25 g of fibre a day, then white bread is crossed out and swapped for whole-grain bread. | `1:12.6` والنصيحة ديالهم:<br>`1:13.6` كل على الأقل 25 غرام<br>`1:15.2` ديال الألياف فالنهار،<br>`1:16.5` وبدل الخبز البيض<br>`1:17.5` بالخبز الكامل. |
+| 14 | 1:19.0 – 1:21.8 | Lime | Equation card assembles piece by piece; the result tile lands in the accent colour. | `1:19.2` ألياف + حبوب كاملة<br>`1:20.6` = صحة أحسن |
+| 15 | 1:21.8 – 1:28.1 | Coral | Coral theme. Donut chart of the day's food; a thin 10% slice is drawn for added sugar while the counter runs to 10%. | `1:22.0` منظمة الصحة العالمية كتقول:<br>`1:23.7` السكر الزايد خاصو يكون<br>`1:25.1` أقل من 10%<br>`1:26.0` من الماكلة ديالك فالنهار. |
+| 16 | 1:28.1 – 1:36.0 | Coral | One soda can, counter to 40 g, sugar cubes stack up, then the daily-limit bar fills almost to the line. | `1:28.4` وقرعة مونادا وحدة<br>`1:29.4` فيها تقريباً 40 غرام<br>`1:30.9` ديال السكر.<br>`1:31.8` يعني قرعة ديال موندا صغير هذي<br>`1:33.7` تقدر تقرب للحد<br>`1:34.6` ديال النهار كامل |
+| 17 | 1:36.0 – 1:44.2 | Mint | Mint theme. Three action rows: white bread → barley bread, juice → fruit, plus lentils/beans with a week tracker lighting two days. | `1:36.2` يعني بلاصة الخبز البيض،<br>`1:37.8` كل خبز الشعير.<br>`1:38.9` بلاصة العصير،<br>`1:39.8` كل الفاكية.<br>`1:40.8` وزيد العدس ولا اللوبيا<br>`1:42.2` مرة ولا جوج فالسيمانة. |
+| 18 | 1:44.2 – 1:49.4 | Lime | Closing card. Healthy foods orbit the title; the final line lands as an accent badge and holds. | `1:44.4` الكربوهيدرات مهيمن صحة ديالنا<br>`1:46.1` غير خاصك تختار<br>`1:47.0` نوع صحي ليك |
