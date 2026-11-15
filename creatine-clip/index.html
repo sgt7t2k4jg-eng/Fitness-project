@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Creatine clip</title>
+<style>
+  @font-face { font-family: Cairo; font-weight: 700; src: url(fonts/cairo-arabic-700-normal.woff2) format('woff2'); }
+  @font-face { font-family: Cairo; font-weight: 900; src: url(fonts/cairo-arabic-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: Cairo; font-weight: 900; src: url(fonts/cairo-latin-900-normal.woff2) format('woff2'); unicode-range: U+0000-00FF; }
+  :root { --lime: #c6ff3d; --ink: #0b0d10; --red: #ff4632; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+  #stage {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    font-family: Cairo, sans-serif; font-weight: 900; color: #fff;
+    background:
+      radial-gradient(900px 900px at 50% 36%, #1c222b 0%, transparent 70%),
+      linear-gradient(180deg, #0e1116 0%, #07080a 100%);
+  }
+  #grid {
+    position: absolute; inset: 0; opacity: .5;
+    background-image: radial-gradient(rgba(255,255,255,.07) 2px, transparent 2.5px);
+    background-size: 54px 54px;
+  }
+  .abs { position: absolute; will-change: transform, opacity; }
+
+  /* Tank */
+  #tankGroup { left: 0; top: 0; width: 1080px; height: 1000px; transform-origin: 540px 200px; }
+  #glow { left: 240px; top: 280px; width: 600px; height: 760px; border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(198,255,61,.55), transparent); opacity: 0; }
+  #cap { left: 480px; top: 308px; width: 120px; height: 40px; border-radius: 16px 16px 0 0; background: #fff; }
+  #tank { left: 380px; top: 340px; width: 320px; height: 640px; border: 12px solid #fff; border-radius: 76px;
+          overflow: hidden; background: rgba(255,255,255,.05); }
+  #liquid { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; background: var(--lime); }
+  #liquid::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 14px; background: rgba(255,255,255,.45); }
+  #gloss { position: absolute; left: 34px; top: 50px; width: 26px; height: 420px; border-radius: 20px; background: rgba(255,255,255,.28); }
+  #tankBolt { position: absolute; left: 50%; top: 50%; width: 150px; height: 220px; margin: -110px 0 0 -75px; }
+
+  .sticker { display: flex; align-items: center; justify-content: center; border-radius: 40px;
+             box-shadow: 0 16px 0 rgba(0,0,0,.45); }
+  #dumbbell { left: 70px; top: 400px; width: 250px; height: 190px; background: #fff; }
+  #muscle { left: 745px; top: 380px; height: 120px; padding: 0 44px; background: #fff; color: var(--ink); font-size: 64px; border-radius: 60px; }
+  #bolt { left: 780px; top: 690px; width: 210px; height: 210px; border-radius: 50%; background: #ffd23d; }
+  #alert { left: 440px; top: 560px; width: 200px; height: 200px; border-radius: 50%; background: var(--red);
+           font-size: 150px; line-height: 1; border: 10px solid #fff; }
+  #pill { left: 250px; top: 150px; width: 580px; height: 136px; border-radius: 68px; background: var(--lime);
+          color: var(--ink); font-size: 84px; padding-bottom: 10px; }
+  .dot { width: 22px; height: 22px; border-radius: 50%; background: #fff; }
+  .spark { width: 70px; height: 70px; }
+
+  /* Reps */
+  #reps { left: 90px; top: 700px; width: 900px; height: 320px; }
+  .rep { position: absolute; bottom: 0; width: 70px; height: 300px; border-radius: 24px;
+         border: 6px solid rgba(255,255,255,.28); overflow: hidden; }
+  .rep i { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: #fff; }
+  .rep.extra { border-style: dashed; border-color: rgba(198,255,61,.55); }
+  .rep.extra i { background: var(--lime); }
+  #stop { left: 60px; top: 560px; width: 230px; height: 230px; }
+  .plus { width: 170px; height: 120px; border-radius: 36px; background: var(--lime); color: var(--ink);
+          font-size: 84px; direction: ltr; line-height: 1; }
+
+  /* Captions */
+  #caption { left: 40px; top: 1180px; width: 1000px; height: 330px; display: flex; flex-wrap: wrap;
+             align-content: center; justify-content: center; gap: 0 30px; direction: rtl;
+             font-size: 116px; line-height: 1.35; }
+  #caption span { display: inline-block; white-space: nowrap;
+                  text-shadow: 0 8px 0 rgba(0,0,0,.55), 0 0 30px rgba(0,0,0,.6); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+
+  <div id="tankGroup" class="abs">
+    <div id="glow" class="abs"></div>
+    <div id="cap" class="abs"></div>
+    <div id="tank" class="abs">
+      <div id="liquid"></div>
+      <div id="gloss"></div>
+      <svg id="tankBolt" viewBox="0 0 60 88"><path d="M36 0 4 50h20l-6 38 38-54H34z" fill="#0b0d10" opacity=".85"/></svg>
+    </div>
+    <div id="dumbbell" class="abs sticker">
+      <svg width="190" height="110" viewBox="0 0 190 110" fill="#0b0d10">
+        <rect x="50" y="45" width="90" height="20" rx="6"/>
+        <rect x="26" y="10" width="30" height="90" rx="10"/><rect x="134" y="10" width="30" height="90" rx="10"/>
+        <rect x="4" y="28" width="22" height="54" rx="8"/><rect x="164" y="28" width="22" height="54" rx="8"/>
+      </svg>
+    </div>
+    <div id="muscle" class="abs sticker">العضلة</div>
+    <div id="bolt" class="abs sticker">
+      <svg width="96" height="140" viewBox="0 0 60 88"><path d="M36 0 4 50h20l-6 38 38-54H34z" fill="#0b0d10"/></svg>
+    </div>
+    <div id="alert" class="abs sticker">!</div>
+    <div id="pill" class="abs sticker">الكرياتين</div>
+    <div id="dots"></div>
+    <div id="sparks"></div>
+  </div>
+
+  <div id="reps" class="abs"></div>
+  <svg id="stop" class="abs" viewBox="0 0 100 100">
+    <polygon points="30,4 70,4 96,30 96,70 70,96 30,96 4,70 4,30" fill="#ff4632" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="24" y="41" width="52" height="18" rx="5" fill="#fff"/>
+  </svg>
+  <div id="plus1" class="abs sticker plus">+1</div>
+  <div id="plus2" class="abs sticker plus">+2</div>
+
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="timeline.js"></script>
+<script>
+const { words, groups, cues: C, DURATION } = TL;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, t0, d) => clamp((t - t0) / d);
+const lerp = (a, b, p) => a + (b - a) * p;
+const easeOut = (p) => 1 - Math.pow(1 - p, 3);
+const easeInOut = (p) => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const back = (p) => { const c = 2.2; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+// Sticker scale: pops in at tIn (overshoot), shrinks out at tOut.
+const popScale = (t, tIn, tOut = 1e9) => {
+  if (t < tIn) return 0;
+  if (t >= tOut) return 1 - easeOut(prog(t, tOut, .16));
+  return back(prog(t, tIn, .3));
+};
+const sticker = (el, sc, rot = 0, extra = '') => {
+  el.style.transform = `${extra} scale(${sc.toFixed(4)}) rotate(${rot}deg)`;
+  el.style.opacity = sc > .01 ? 1 : 0;
+};
+const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+// --- build DOM ---
+const cap = $('caption');
+const wordEls = words.map((w) => { const s = document.createElement('span'); s.textContent = w.text; return s; });
+
+const REPS = C.reps.length, SLOTS = REPS + 2, STEP = 92;
+const repEls = [];
+for (let i = 0; i < SLOTS; i++) {
+  const d = document.createElement('div');
+  d.className = 'rep' + (i >= REPS ? ' extra' : '');
+  d.style.right = i * STEP + 'px'; // fill right-to-left (RTL)
+  d.innerHTML = '<i></i>';
+  $('reps').appendChild(d); repEls.push(d);
+}
+const slotX = (i) => 90 + 900 - i * STEP - 35; // slot centre x on stage
+
+const DOTS = 14, dotEls = [];
+for (let i = 0; i < DOTS; i++) { const d = document.createElement('div'); d.className = 'abs dot'; $('dots').appendChild(d); dotEls.push(d); }
+const SPARKS = [[300, 360], [790, 420], [250, 760], [830, 880], [330, 1000]], sparkEls = [];
+SPARKS.forEach(() => {
+  const d = document.createElement('div'); d.className = 'abs spark';
+  d.innerHTML = '<svg viewBox="0 0 40 40"><path d="M20 0c2 12 6 16 20 20-14 4-18 8-20 20-2-12-6-16-20-20C14 16 18 12 20 0z" fill="#c6ff3d"/></svg>';
+  $('sparks').appendChild(d); sparkEls.push(d);
+});
+
+let shownGroup = -1;
+
+function levelAt(t) {
+  if (t < C.drainStart) return 1;
+  if (t < C.scene2) return lerp(1, .05, easeInOut(prog(t, C.drainStart, C.drainEnd - C.drainStart)));
+  if (t < C.fillStart) return .05;
+  if (t < C.scene3) return lerp(.05, 1, easeInOut(prog(t, C.fillStart, C.fillEnd - C.fillStart)));
+  // scene 3: each rep spends energy; creatine leaves a reserve for the extra reps
+  let lv = 1;
+  C.reps.forEach((r) => { lv -= .095 * easeOut(prog(t, r, .15)); });
+  lv -= .09 * easeOut(prog(t, C.plus1, .2));
+  lv -= .09 * easeOut(prog(t, C.plus2, .2));
+  return lv;
+}
+function levelColor(lv) {
+  const a = [198, 255, 61], b = [255, 170, 40], c = [255, 70, 50];
+  const mix = (x, y, p) => x.map((v, i) => Math.round(lerp(v, y[i], p)));
+  const rgb = lv > .45 ? a : lv > .2 ? mix(b, a, (lv - .2) / .25) : mix(c, b, clamp((lv - .06) / .14));
+  return `rgb(${rgb.join(',')})`;
+}
+
+window.setTime = function (t) {
+  // ---------- captions ----------
+  let gi = groups.findIndex((g) => t >= g.start && t < g.end);
+  if (t < groups[0].start) gi = 0;
+  if (gi !== shownGroup) {
+    cap.replaceChildren(...groups[gi].words.map((i) => wordEls[i]));
+    shownGroup = gi;
+  }
+  groups[gi].words.forEach((i) => {
+    const w = words[i], el = wordEls[i];
+    if (t < w.start) { el.style.opacity = 0; return; }
+    const p = prog(t, w.start, .12);
+    const active = t < w.end + .02;
+    el.style.opacity = 1;
+    el.style.color = active ? '#c6ff3d' : '#fff';
+    el.style.transform = `translateY(${(1 - easeOut(p)) * 26}px) scale(${lerp(.7, 1, back(p)).toFixed(4)})`;
+  });
+
+  // ---------- tank ----------
+  const lv = levelAt(t);
+  $('liquid').style.height = (lv * 100).toFixed(2) + '%';
+  $('liquid').style.background = levelColor(lv);
+
+  const emptyOn = t >= C.empty && t < C.scene2;
+  const flash = emptyOn ? .5 + .5 * Math.sin((t - C.empty) * 22) : 0;
+  const shake = emptyOn ? Math.sin((t - C.empty) * 70) * 9 * (1 - prog(t, C.empty, .45)) : 0;
+  const tankCol = emptyOn ? `rgb(255,${Math.round(lerp(255, 70, flash))},${Math.round(lerp(255, 50, flash))})` : '#fff';
+  $('tank').style.borderColor = tankCol;
+  $('cap').style.background = tankCol;
+  const fullPulse = t >= C.full ? 1 + .07 * Math.sin(prog(t, C.full, .35) * Math.PI) : 1;
+  $('tank').style.transform = `translateX(${shake.toFixed(2)}px) scale(${fullPulse.toFixed(4)})`;
+  $('glow').style.opacity = t >= C.full && t < C.scene3 + .4 ? (1 - prog(t, C.full, .9) * .5).toFixed(3) : 0;
+
+  // scene 3: tank shrinks to the top to make room for the rep bars
+  const s3 = easeInOut(prog(t, C.scene3, .38));
+  $('tankGroup').style.transform = `translateY(${lerp(0, 20, s3)}px) scale(${lerp(1, .56, s3).toFixed(4)})`;
+
+  // ---------- stickers ----------
+  sticker($('dumbbell'), popScale(t, C.dumbbell, C.scene2), -10);
+  sticker($('muscle'), popScale(t, C.muscle, C.scene2), 7);
+  sticker($('bolt'), popScale(t, C.bolt, C.scene2), 10 + Math.sin(t * 9) * 4);
+  sticker($('alert'), popScale(t, C.empty, C.scene2), -6);
+  sticker($('pill'), popScale(t, C.scene2), -4);
+
+  // creatine powder falling into the tank while it fills
+  dotEls.forEach((d, i) => {
+    const span = C.fillEnd - C.fillStart;
+    const t0 = C.fillStart - .05 + rnd(i) * span * .85;
+    const p = prog(t, t0, .34);
+    const on = p > 0 && p < 1;
+    d.style.opacity = on ? 1 : 0;
+    if (on) d.style.transform = `translate(${440 + rnd(i + 50) * 200}px, ${lerp(285, 420 + (1 - lv) * 480, p * p)}px)`;
+  });
+  sparkEls.forEach((d, i) => {
+    const p = prog(t, C.full + i * .04, .5);
+    const sc = p > 0 && p < 1 ? Math.sin(p * Math.PI) * (1 + rnd(i) * .6) : 0;
+    d.style.opacity = sc > 0 ? 1 : 0;
+    d.style.transform = `translate(${SPARKS[i][0] - 35}px, ${SPARKS[i][1] - 35}px) scale(${sc.toFixed(3)}) rotate(${p * 90}deg)`;
+  });
+
+  // ---------- reps ----------
+  $('reps').style.opacity = t >= C.scene3 ? 1 : 0;
+  repEls.forEach((d, i) => {
+    const appear = back(prog(t, C.scene3 + .1 + i * .02, .25));
+    const fillT = i < REPS ? C.reps[i] : i === REPS ? C.plus1 : C.plus2;
+    const f = prog(t, fillT, .13);
+    d.firstChild.style.height = (easeOut(f) * 100).toFixed(1) + '%';
+    const bump = f > 0 && f < 1 ? 1 + .12 * Math.sin(f * Math.PI) : 1;
+    d.style.transformOrigin = '50% 100%';
+    d.style.transform = `scaleY(${(Math.max(0, appear) * bump).toFixed(4)})`;
+    if (i >= REPS) d.style.opacity = t >= C.stopOut - .1 || t >= fillT ? 1 : .0;
+  });
+  // stop sign lands on the two missing reps, then gets kicked away
+  const stopX = (slotX(REPS) + slotX(REPS + 1)) / 2 - 115;
+  const kicked = easeOut(prog(t, C.stopOut, .25));
+  $('stop').style.left = stopX + 'px';
+  $('stop').style.top = '735px';
+  sticker($('stop'), t < C.stop ? 0 : back(prog(t, C.stop, .3)) * (1 - kicked), -8 - kicked * 40,
+          `translate(${-kicked * 120}px, ${-kicked * 60}px)`);
+
+  [['plus1', C.plus1, REPS, -8], ['plus2', C.plus2, REPS + 1, 8]].forEach(([id, at, slot, rot]) => {
+    const el = $(id);
+    el.style.left = slotX(slot) - 85 + 'px';
+    el.style.top = (slot === REPS ? 545 : 420) + 'px';
+    sticker(el, popScale(t, at), rot);
+  });
+};
+
+window.ready = document.fonts.ready.then(() => { setTime(0); return true; });
+
+// Live preview when opened directly in a browser (add ?t=3.2 to freeze a frame).
+const q = new URLSearchParams(location.search);
+if (q.has('t')) window.ready.then(() => setTime(+q.get('t')));
+else if (!navigator.webdriver) {
+  const t0 = performance.now();
+  (function loop() { setTime(((performance.now() - t0) / 1000) % (DURATION + .6)); requestAnimationFrame(loop); })();
+}
+</script>
+</body>
+</html>
