@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Carbs</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<style>
+  .scene { left: 0; top: 0; width: 1080px; height: 1160px; }
+  .card { background: #fff; border-radius: 22%; }
+  .row { left: 0; width: 1080px; display: flex; justify-content: center; align-items: center; direction: rtl; }
+  .bigpill { height: 132px; padding: 0 58px 10px; border-radius: 66px; font-size: 76px; white-space: nowrap;
+             background: var(--lime); color: var(--ink); }
+  .bigpill.white { background: #fff; }
+  .pill { gap: 14px; }
+  .pill img { width: 54px; height: 54px; margin-top: 8px; }
+  .card img { width: 62%; height: 62%; }
+  .hex { width: 78px; height: 88px; background: var(--lime);
+         clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+  .num { width: 132px; height: 132px; border-radius: 50%; background: var(--lime); color: var(--ink);
+         font-size: 88px; line-height: 1; padding-bottom: 6px; flex: none; }
+  .num.big { width: 210px; height: 210px; font-size: 136px; }
+  .head { top: 150px; height: 172px; gap: 34px; }
+  .htitle { font-size: 100px; line-height: 172px; white-space: nowrap; }
+  .circle { border-radius: 50%; }
+  .yellow { background: #ffd23d; color: var(--ink); }
+  .bar { left: 190px; width: 700px; height: 96px; border-radius: 48px; border: 8px solid rgba(255,255,255,.35);
+         overflow: hidden; background: rgba(255,255,255,.05); }
+  .bar i { position: absolute; top: 0; bottom: 0; right: 0; width: 0; background: var(--lime); }
+  .gauge { width: 240px; height: 40px; border-radius: 20px; border: 6px solid rgba(255,255,255,.35); overflow: hidden; }
+  .gauge i { position: absolute; top: 0; bottom: 0; right: 0; width: 0; background: var(--lime); }
+  .line { width: 8px; border-radius: 4px; background: rgba(255,255,255,.6); transform-origin: 50% 0; }
+  .streak { height: 14px; border-radius: 7px; background: #fff; transform-origin: 0 50%; }
+  #batt { left: 270px; top: 300px; width: 540px; height: 210px; border: 12px solid #fff; border-radius: 56px; overflow: hidden;
+          background: rgba(255,255,255,.05); }
+  #batt i { position: absolute; top: 0; bottom: 0; right: 0; width: 100%; background: var(--lime); }
+  #battNub { left: 232px; top: 365px; width: 38px; height: 80px; border-radius: 14px 0 0 14px; background: #fff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="scenes"></div>
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, DURATION } = TL;
+const { clamp, prog, lerp, easeOut, easeInOut, back, popScale, sticker, rnd } = KIT;
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL);
+
+const BOLT = (w, fill = '#0b0d10') => `<svg width="${w}" height="${w * 1.47}" viewBox="0 0 60 88"><path d="M36 0 4 50h20l-6 38 38-54H34z" fill="${fill}"/></svg>`;
+const CHECK = (w) => `<svg width="${w}" height="${w}" viewBox="0 0 48 48"><path d="M8 25l11 11L40 13" fill="none" stroke="#0b0d10" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ARROW = (w, col = '#0b0d10') => `<svg width="${w}" height="${w}" viewBox="0 0 48 48"><path d="M24 6v34M9 26l15 15 15-15" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SPARK = '<svg viewBox="0 0 40 40"><path d="M20 0c2 12 6 16 20 20-14 4-18 8-20 20-2-12-6-16-20-20C14 16 18 12 20 0z" fill="#c6ff3d"/></svg>';
+const LIVER = '<svg width="190" height="136" viewBox="0 0 246 176"><path d="M10 60C10 20 60 8 120 10c70 2 112 20 116 60 2 30-36 40-66 50-40 14-80 50-120 40C20 150 10 100 10 60z" fill="#b5533c"/><path d="M60 46c30-12 80-12 120 0" fill="none" stroke="#d98a76" stroke-width="10" stroke-linecap="round"/></svg>';
+
+// ---------- element builders ----------
+const el = (parent, cls, html = '', style = {}) => {
+  const d = document.createElement('div');
+  d.className = cls; d.innerHTML = html; Object.assign(d.style, style); parent.appendChild(d); return d;
+};
+const box = (parent, cls, html, cx, cy, w, h = w, style = {}) =>
+  el(parent, 'abs sticker ' + cls, html, { left: cx - w / 2 + 'px', top: cy - h / 2 + 'px', width: w + 'px', height: h + 'px', ...style });
+const card = (parent, icon, cx, cy, size = 230) =>
+  box(parent, 'card', `<img src="../../icons/${icon}.svg">`, cx, cy, size, size);
+// horizontally centred, auto-width pill
+const pill = (parent, html, cx, cy, cls = 'bigpill') => {
+  const row = el(parent, 'abs row', '', { left: cx - 540 + 'px', top: cy - 70 + 'px', height: '140px' });
+  return el(row, 'sticker ' + cls, html);
+};
+const header = (parent, n, title, size = 100) => {
+  const row = el(parent, 'abs row head');
+  return { num: el(row, 'sticker num', String(n)), title: el(row, 'htitle', title, { fontSize: size + 'px' }) };
+};
+const sparks = (parent, pts) => pts.map(([x, y]) => { const d = el(parent, 'abs spark', SPARK); d._x = x; d._y = y; return d; });
+const sparkle = (els, t, at) => els.forEach((d, i) => {
+  const p = prog(t, at + i * 0.05, 0.6);
+  const sc = p > 0 && p < 1 ? Math.sin(p * Math.PI) * (1 + rnd(i) * 0.6) : 0;
+  d.style.opacity = sc > 0 ? 1 : 0;
+  d.style.transform = `translate(${d._x - 35}px, ${d._y - 35}px) scale(${sc.toFixed(3)}) rotate(${p * 90}deg)`;
+});
+const place = (d, x, y, sc = 1, rot = 0) => {
+  d.style.opacity = sc > 0.01 ? 1 : 0;
+  d.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${Math.max(0, sc).toFixed(4)}) rotate(${rot}deg)`;
+};
+const fade = (d, p) => { d.style.opacity = p > 0.01 ? 1 : 0; d.style.transform = `scale(${Math.max(0, p).toFixed(4)})`; };
+// RTL grid: rows of card centres, first item on the right
+const grid = (rows, step, ys) => rows.flatMap((n, r) => Array.from({ length: n }, (_, i) => [540 + ((n - 1) / 2 - i) * step, ys[r]]));
+
+// ---------- scenes ----------
+const SCENES = [];
+const scene = (from, to, build) => {
+  const root = el(document.getElementById('scenes'), 'abs scene');
+  SCENES.push({ root, from, to, draw: build(root) });
+};
+const END = DURATION + 5;
+
+// A1 — where carbs are found
+scene(0, C.sc2 - 0.22, (r) => {
+  const title = pill(r, 'الكربوهيدرات', 540, 225);
+  const pos = grid([3, 2, 2], 270, [455, 715, 975]);
+  const cards = ['bread', 'rice', 'potato', 'beans', 'apple', 'candy', 'cake'].map((e, i) => card(r, e, pos[i][0], pos[i][1], 230));
+  return (t) => {
+    sticker(title, popScale(t, C.carbsPill), -3);
+    cards.forEach((d, i) => sticker(d, popScale(t, C.foods[i]), i % 2 ? 4 : -4));
+  };
+});
+
+// A2 — digestion: carbs -> glucose -> energy
+scene(C.sc2, C.sc3 - 0.22, (r) => {
+  const bread = card(r, 'bread', 540, 340, 270);
+  const targets = grid([4, 4], 120, [600, 710]);
+  const hexes = targets.map(() => el(r, 'abs hex', '', { left: '-39px', top: '-44px' }));
+  const label = pill(r, 'الغلوكوز', 540, 850, 'bigpill white');
+  const bolt = box(r, 'circle yellow', BOLT(92), 540, 930, 230);
+  const runner = card(r, 'runner', 320, 930, 250);
+  const span = C.unitsEnd - C.units;
+  return (t) => {
+    const shake = t >= C.breakStart && t < C.units ? Math.sin((t - C.breakStart) * 60) * 10 : 0;
+    sticker(bread, popScale(t, C.bread, C.units + span * 0.5), -4, `translateX(${shake.toFixed(1)}px)`);
+    const cv = easeInOut(prog(t, C.converge, C.bolt - C.converge));
+    hexes.forEach((d, i) => {
+      const t0 = C.units + (i * span) / 8;
+      const p = easeOut(prog(t, t0, 0.45));
+      const x = lerp(lerp(540, targets[i][0], p), 540, cv), y = lerp(lerp(340, targets[i][1], p), 930, cv);
+      place(d, x, y, t < t0 ? 0 : back(prog(t, t0, 0.4)) * (1 - cv), i * 30 + cv * 120);
+    });
+    sticker(label, popScale(t, C.gluLabel, C.converge), 3);
+    const slide = easeInOut(prog(t, C.boltSlide, 0.5)) * 230;
+    const pulse = 1 + 0.06 * Math.sin(t * 9) * prog(t, C.runner, 0.3);
+    sticker(bolt, popScale(t, C.bolt) * pulse, 8, `translateX(${slide.toFixed(1)}px)`);
+    sticker(runner, popScale(t, C.runner), 0, `translateY(${(Math.sin(t * 11) * 10 * prog(t, C.runner, 0.3)).toFixed(1)}px)`);
+  };
+});
+
+// A3 — surplus glucose stored in muscles + liver as glycogen
+scene(C.sc3, C.sc4 - 0.22, (r) => {
+  const targets = grid([3, 3], 110, [270, 370]);
+  const hexes = targets.map(() => el(r, 'abs hex', '', { left: '-39px', top: '-44px' }));
+  const arrow = box(r, 'circle card', ARROW(96), 540, 520, 150);
+  const muscle = card(r, 'muscle', 770, 700, 260);
+  const liver = box(r, 'card', LIVER, 310, 700, 260);
+  const gauges = [770, 310].map((cx) => el(r, 'abs gauge', '<i></i>', { left: cx - 120 + 'px', top: '860px' }));
+  const label = pill(r, 'Glycogen', 540, 1030);
+  const span = C.surplusEnd - C.sc3;
+  return (t) => {
+    hexes.forEach((d, i) => {
+      const toMuscle = i % 3 === 0 || i === 4; // 3 units to each store
+      const t0 = C.sc3 + (i * span) / 6;
+      const flyAt = (toMuscle ? C.muscleCard : C.liverCard) + 0.2 + (i % 3) * 0.1;
+      const f = easeInOut(prog(t, flyAt, 0.5));
+      const x = lerp(targets[i][0], toMuscle ? 770 : 310, f), y = lerp(targets[i][1], 700, f);
+      place(d, x, y, t < t0 ? 0 : back(prog(t, t0, 0.4)) * (1 - f * f), i * 30);
+    });
+    sticker(arrow, popScale(t, C.store, C.glycLabel), 0, `translateY(${(Math.sin(t * 8) * 10).toFixed(1)}px)`);
+    sticker(muscle, popScale(t, C.muscleCard), 4);
+    sticker(liver, popScale(t, C.liverCard), -4);
+    [C.muscleCard, C.liverCard].forEach((at, i) => {
+      gauges[i].style.opacity = t >= at ? 1 : 0;
+      gauges[i].firstChild.style.width = easeOut(prog(t, at + 0.5, 0.7)) * 100 + '%';
+    });
+    sticker(label, popScale(t, C.glycLabel), -3);
+  };
+});
+
+// A4 — why the store matters for training
+scene(C.sc4, C.partB - 0.5, (r) => {
+  el(r, 'abs', '', {}).id = 'battNub';
+  const batt = el(r, 'abs', '<i></i>'); batt.id = 'batt';
+  const nub = document.getElementById('battNub');
+  const label = pill(r, 'Glycogen', 540, 215, 'pill lime');
+  const lifter = card(r, 'lifter', 540, 870, 330);
+  const bolts = Array.from({ length: 7 }, () => el(r, 'abs', BOLT(44, '#ffd23d'), { left: '-22px', top: '-32px' }));
+  const sp = sparks(r, [[200, 300], [880, 300], [230, 520], [850, 540], [540, 250]]);
+  const sp2 = sparks(r, [[250, 700], [830, 720], [220, 1000], [860, 1010], [540, 660]]);
+  return (t) => {
+    const bs = popScale(t, C.battery) * (1 + 0.08 * Math.sin(prog(t, C.important, 0.5) * Math.PI));
+    [batt, nub].forEach((d) => { d.style.transformOrigin = d === batt ? '50% 50%' : '308px 40px'; fade(d, bs); });
+    sticker(label, popScale(t, C.battery + 0.1), -3);
+    sparkle(sp, t, C.important);
+    const use = prog(t, C.useStart, C.useEnd - C.useStart);
+    const lv = lerp(1, 0.32, easeInOut(use));
+    batt.firstChild.style.width = lv * 100 + '%';
+    batt.firstChild.style.background = lv > 0.5 ? '#c6ff3d' : `rgb(${Math.round(lerp(255, 198, (lv - 0.3) / 0.2))},${Math.round(lerp(190, 255, (lv - 0.3) / 0.2))},50)`;
+    const working = t >= C.useStart ? Math.abs(Math.sin((t - C.useStart) * 5)) * -26 : 0;
+    sticker(lifter, popScale(t, C.athlete), 0, `translateY(${working.toFixed(1)}px)`);
+    bolts.forEach((d, i) => {
+      const t0 = C.useStart + (i * (C.useEnd - C.useStart - 0.4)) / 7;
+      const p = prog(t, t0, 0.5);
+      place(d, 540 + (rnd(i) - 0.5) * 160, lerp(530, 720, p * p), p > 0 && p < 1 ? Math.sin(p * Math.PI) * 1.2 : 0, (rnd(i + 9) - 0.5) * 40);
+    });
+    sparkle(sp2, t, C.finalA);
+  };
+});
+
+// B1 — there are types of carbs
+scene(C.partB - 0.1, C.sc6 - 0.22, (r) => {
+  const title = pill(r, 'الكربوهيدرات', 540, 400);
+  const lines = [-46, 46].map((a) => el(r, 'abs line', '', { left: '536px', top: '470px', height: '250px' }));
+  const n1 = box(r, 'num big', '1', 770, 790, 210);
+  const n2 = box(r, 'num big', '2', 310, 790, 210);
+  return (t) => {
+    sticker(title, popScale(t, C.pillB), -3);
+    lines.forEach((d, i) => {
+      d.style.opacity = t >= C.types ? 1 : 0;
+      d.style.transform = `rotate(${i ? 46 : -46}deg) scaleY(${easeOut(prog(t, C.types, 0.35)).toFixed(4)})`;
+    });
+    sticker(n1, popScale(t, C.types + 0.05), 6);
+    sticker(n2, popScale(t, C.types + 0.25), -6);
+  };
+});
+
+// B2 — type 1: fast carbs
+scene(C.sc6, C.sc7 - 0.22, (r) => {
+  const h = header(r, 1, 'الكارب السريع');
+  const pos = grid([2, 2], 290, [500, 790]);
+  const cards = ['candy', 'soda', 'cake', 'juice'].map((e, i) => card(r, e, pos[i][0], pos[i][1], 250));
+  const bolt = box(r, 'circle yellow', BOLT(100), 800, 500, 250);
+  const streaks = [-60, 0, 60].map((dy, i) => el(r, 'abs streak', '', { left: '330px', top: 493 + dy + 'px', width: 380 - i * 60 + 'px' }));
+  const label = pill(r, 'الشبع', 540, 740, 'pill');
+  const bar = el(r, 'abs bar', '<i></i>', { top: '830px' });
+  return (t) => {
+    sticker(h.num, popScale(t, C.sc6), -6);
+    fade(h.title, popScale(t, C.title6));
+    cards.forEach((d, i) => sticker(d, popScale(t, C.items6[i], C.digest - 0.08), i % 2 ? 4 : -4));
+    const zip = easeInOut(prog(t, C.speed, 0.3));
+    sticker(bolt, popScale(t, C.digest + 0.1), 8, `translateX(${(-zip * 520).toFixed(1)}px)`);
+    streaks.forEach((d, i) => {
+      const p = prog(t, C.speed + i * 0.03, 0.45);
+      d.style.opacity = p > 0 && p < 1 ? 0.8 : 0;
+      d.style.transform = `scaleX(${Math.sin(p * Math.PI).toFixed(4)})`;
+    });
+    sticker(label, popScale(t, C.satFrame6), -3);
+    bar.style.opacity = t >= C.satFrame6 ? 1 : 0;
+    bar.style.transform = `scaleX(${easeOut(prog(t, C.satFrame6, 0.35)).toFixed(4)})`;
+    bar.firstChild.style.background = '#ff4632';
+    bar.firstChild.style.width = easeOut(prog(t, C.satLow, 0.6)) * 16 + '%';
+  };
+});
+
+// B3 — type 2: fibre-rich carbs
+scene(C.sc7, C.partC - 0.5, (r) => {
+  const h = header(r, 2, 'الكارب الغني بالألياف', 74);
+  const pos = grid([3, 2, 2], 250, [455, 700, 945]);
+  const cards = ['oats', 'rice', 'potato', 'bread', 'wheat', 'beans', 'apple'].map((e, i) => card(r, e, pos[i][0], pos[i][1], 215));
+  const label = pill(r, 'الشبع', 540, 420, 'pill');
+  const bar = el(r, 'abs bar', '<i></i>', { top: '510px' });
+  const p1 = pill(r, 'الألياف', 540, 770);
+  const p2 = pill(r, 'العناصر الغذائية', 540, 950, 'bigpill white');
+  const sp = sparks(r, [[170, 700], [910, 720], [150, 980], [930, 990], [540, 860]]);
+  return (t) => {
+    sticker(h.num, popScale(t, C.sc7), -6);
+    fade(h.title, popScale(t, C.title7));
+    cards.forEach((d, i) => sticker(d, popScale(t, C.items7[i], C.help - 0.08), i % 2 ? 4 : -4));
+    sticker(label, popScale(t, C.satFrame7), -3);
+    bar.style.opacity = t >= C.satFrame7 ? 1 : 0;
+    bar.style.transform = `scaleX(${easeOut(prog(t, C.satFrame7, 0.35)).toFixed(4)})`;
+    bar.firstChild.style.width = easeInOut(prog(t, C.satFill, C.satFillEnd - C.satFill)) * 94 + '%';
+    sticker(p1, popScale(t, C.pillFib), -3);
+    sticker(p2, popScale(t, C.pillNutr), 3);
+    sparkle(sp, t, C.sparkB);
+  };
+});
+
+// C — which one is better?
+scene(C.partC - 0.1, END, (r) => {
+  const sweet = card(r, 'candy', 290, 420, 290);
+  const fibre = card(r, 'oats', 790, 420, 290);
+  const q = box(r, 'circle yellow', '؟', 540, 420, 180, 180, { fontSize: '124px', lineHeight: 1, paddingBottom: '14px' });
+  const goals = [
+    pill(r, '<img src="../../icons/heart.svg">الصحة', 790, 720, 'pill'),
+    pill(r, '<img src="../../icons/muscle.svg">بناء العضلات', 350, 720, 'pill'),
+    pill(r, '<img src="../../icons/fire.svg">التنشيف', 540, 860, 'pill'),
+  ];
+  const ok = box(r, 'circle', CHECK(92), 930, 270, 160, 160, { background: '#c6ff3d', border: '10px solid #0b0d10', boxShadow: 'none' });
+  const down = box(r, 'circle', ARROW(84, '#fff'), 150, 300, 140, 140, { background: '#ff4632', border: '10px solid #0b0d10', boxShadow: 'none' });
+  const sp = sparks(r, [[640, 240], [960, 480], [620, 580], [900, 180], [540, 1000]]);
+  return (t) => {
+    const grow = easeInOut(prog(t, C.pick, 0.5));
+    const shr = easeInOut(prog(t, C.shrink, 0.5));
+    sticker(sweet, popScale(t, C.vsA) * lerp(1, 0.62, shr), -5);
+    sweet.style.filter = `grayscale(${shr * 0.8}) brightness(${1 - shr * 0.35})`;
+    sticker(fibre, popScale(t, C.vsB) * lerp(1, 1.14, grow), 5);
+    fibre.style.boxShadow = `0 0 0 ${(grow * 16).toFixed(1)}px #c6ff3d, 0 16px 0 rgba(0,0,0,.45)`;
+    sticker(q, popScale(t, C.q, C.pick), -8);
+    goals.forEach((d, i) => sticker(d, popScale(t, C.goals[i]), [-3, 3, -2][i]));
+    sticker(ok, popScale(t, C.check), -8);
+    sticker(down, popScale(t, C.down), 6);
+    sparkle(sp, t, C.finalC);
+  };
+});
+
+function setTime(t) {
+  updateCaptions(t);
+  SCENES.forEach((s) => {
+    const on = t >= s.from - 0.02 && t < s.to + 0.26;
+    s.root.style.display = on ? 'block' : 'none';
+    if (!on) return;
+    s.root.style.opacity = (1 - prog(t, s.to - 0.04, 0.26)).toFixed(3);
+    s.draw(t);
+  });
+}
+KIT.boot(setTime, DURATION);
+// frames must not be captured before the icons are decoded
+window.ready = Promise.all([window.ready, ...[...document.images].map((im) => im.decode())]).then(() => true);
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+Food and activity icons are from Twemoji (https://github.com/jdecked/twemoji).
+Graphics licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/

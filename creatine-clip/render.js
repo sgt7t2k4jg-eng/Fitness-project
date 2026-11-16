@@ -14,11 +14,12 @@ const TL = require(path.join(CLIP_DIR, 'timeline.js'));
 
 const ROOT = path.resolve(__dirname, '..');
 const BUILD = path.join(__dirname, 'build', CLIP);
-const OUT = path.join(ROOT, 'Exports', TL.OUT);
+// partsOnly clips keep the full-length master in build/ and export only the cuts.
+const OUT = TL.partsOnly ? path.join(BUILD, TL.OUT) : path.join(ROOT, 'Exports', TL.OUT);
 
 (async () => {
   fs.mkdirSync(BUILD, { recursive: true });
-  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.mkdirSync(path.join(ROOT, 'Exports'), { recursive: true });
 
   const tlJson = path.join(BUILD, 'timeline.json');
   const wav = path.join(BUILD, 'sfx.wav');
