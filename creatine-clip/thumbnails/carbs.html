@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Thumbnail — شنو هو الكارب؟</title>
+<style>
+  @font-face { font-family: Cairo; font-weight: 900; src: url(../fonts/cairo-arabic-900-normal.woff2) format('woff2'); }
+  @font-face { font-family: Cairo; font-weight: 900; src: url(../fonts/cairo-latin-900-normal.woff2) format('woff2'); unicode-range: U+0000-00FF; }
+  :root { --lime: #c6ff3d; --ink: #0b0d10; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: Cairo, sans-serif; font-weight: 900; }
+
+  /* photo: scaled to cover, nudged so the face sits in the middle third */
+  #photo { position: absolute; left: -75px; top: -70px; width: 1240px; height: auto;
+           filter: contrast(1.08) saturate(1.06) brightness(1.04); }
+  /* darken the busy posters at the top + the bottom edge, keep the face clear */
+  #shade { position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(5,6,8,.97) 0%, rgba(5,6,8,.94) 34%, rgba(5,6,8,.45) 40%, rgba(5,6,8,0) 46%),
+      linear-gradient(0deg, rgba(5,6,8,.95) 0%, rgba(5,6,8,.75) 14%, rgba(5,6,8,0) 34%),
+      radial-gradient(700px 560px at 52% 52%, rgba(255,255,255,.06), transparent 70%); }
+  #rim { position: absolute; left: 0; right: 0; top: 0; height: 1920px;
+         background: radial-gradient(1100px 800px at 50% 55%, transparent 60%, rgba(0,0,0,.55) 100%); }
+
+  /* title (kept inside the 3:4 grid crop: y 240..1680) */
+  #title { position: absolute; left: 0; width: 1080px; top: 255px; text-align: center; color: #fff; line-height: 1.12;
+           text-shadow: 0 10px 0 rgba(0,0,0,.6), 0 0 40px rgba(0,0,0,.7); }
+  #title .l1 { display: block; font-size: 128px; }
+  #title .l2 { display: inline-block; margin-top: 14px; font-size: 178px; line-height: 1; padding: 6px 54px 34px;
+               background: var(--lime); color: var(--ink); border-radius: 40px; transform: rotate(-2.5deg);
+               text-shadow: none; box-shadow: 0 16px 0 rgba(0,0,0,.55); }
+
+  /* food stickers around the head */
+  .card { position: absolute; width: 190px; height: 190px; border-radius: 44px; background: #fff;
+          display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 0 rgba(0,0,0,.5); }
+  .card img { width: 66%; height: 66%; }
+
+  /* bottom tag */
+  #tag { position: absolute; left: 0; width: 1080px; top: 1505px; display: flex; justify-content: center; gap: 22px; direction: rtl; }
+  .chip { height: 104px; padding: 0 44px 10px; border-radius: 52px; font-size: 58px; line-height: 104px; color: #fff;
+          background: rgba(255,255,255,.12); border: 4px solid rgba(255,255,255,.35); backdrop-filter: blur(8px); }
+  .chip.lime { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="photo" src="photos/carbs.jpg">
+  <div id="shade"></div>
+  <div id="rim"></div>
+
+  <div id="title"><span class="l1">شنو هو</span><span class="l2">الكارب؟</span></div>
+
+  <div class="card" style="left: 60px; top: 800px; transform: rotate(-10deg)"><img src="../icons/bread.svg"></div>
+  <div class="card" style="left: 830px; top: 760px; transform: rotate(9deg)"><img src="../icons/rice.svg"></div>
+  <div class="card" style="left: 70px; top: 1110px; transform: rotate(7deg); width: 160px; height: 160px"><img src="../icons/potato.svg"></div>
+  <div class="card" style="left: 860px; top: 1080px; transform: rotate(-8deg); width: 160px; height: 160px"><img src="../icons/candy.svg"></div>
+
+  <div id="tag"><span class="chip lime">الطاقة</span><span class="chip">الأنواع</span><span class="chip">شنو تاكل</span></div>
+</div>
+<script>
+  window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode())]);
+</script>
+</body>
+</html>

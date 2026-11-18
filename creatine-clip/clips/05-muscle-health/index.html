@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Muscle & health</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<link rel="stylesheet" href="../../shared/ui.css">
+<style>
+  .tube { left: 70px; top: 460px; width: 940px; height: 120px; border-radius: 60px;
+          background: linear-gradient(180deg, #9b2335, #5e1220); box-shadow: inset 0 10px 0 rgba(255,255,255,.12); }
+  .paper { width: 230px; height: 290px; border-radius: 26px; background: #fff; padding: 34px 28px; }
+  .paper b { display: block; height: 16px; border-radius: 8px; background: #c9ced6; margin-bottom: 22px; }
+  .paper b:first-child { width: 60%; background: var(--ink); }
+  .paper b:last-child { width: 75%; background: var(--lime); height: 46px; border-radius: 12px; margin-top: 34px; }
+  .chips { left: 0; width: 1080px; display: flex; justify-content: center; gap: 22px; direction: rtl; }
+  .chips .bigpill { font-size: 54px; height: 108px; padding: 0 34px 8px; gap: 10px; background: #fff; }
+  .chips .bigpill svg { flex: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="heads"></div>
+  <div id="scenes"></div>
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="../../shared/ui.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, DURATION } = TL;
+const { prog, lerp, easeOut, easeInOut, back, popScale, sticker, rnd } = KIT;
+const { el, box, card, pill, header, sparks, sparkle, place, fade, icon, CHECK, CROSS, ARROW, BOLT } = UI;
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL);
+const SC = UI.scenes(document.getElementById('scenes'));
+const END = DURATION + 5;
+
+// ---------- section headers (stay up for the whole part) ----------
+const HEADS = [
+  [1, 'مرض السكري', 100, C.num1, C.title1, C.p2 - 0.45],
+  [2, 'ملي كتمرض', 100, C.num2, C.title2, C.p3 - 0.45],
+  [3, 'السقوط والإصابات', 84, C.num3, C.title3, END],
+].map(([n, title, size, at, titleAt, out]) => ({ ...header(document.getElementById('heads'), n, title, size), at, titleAt, out }));
+
+// small badge sticker (check / cross / arrow) pinned to a card corner
+const badge = (parent, html, cx, cy, bg, size = 120) => box(parent, 'circle badge', html, cx, cy, size, size, { background: bg });
+const LIME = '#c6ff3d', RED = '#ff4632';
+
+// ===================== 1 — diabetes =====================
+SC.add(C.num1, C.sc1b - 0.22, (r) => {
+  const blood = card(r, 'blood', 540, 690, 340);
+  return (t) => sticker(blood, popScale(t, C.drop + 0.15), -5, `translateY(${(Math.sin(t * 3) * 10).toFixed(1)}px)`);
+});
+
+// sugar in the blood -> taken up by the muscle; blood sugar level comes back to normal
+SC.add(C.sc1b, C.sc1c - 0.22, (r) => {
+  const tube = el(r, 'abs tube');
+  const label = pill(r, 'الدم', 860, 420, 'pill red');
+  const muscle = card(r, 'muscle', 760, 860, 250);
+  const N = 8;
+  const hexes = Array.from({ length: N }, () => el(r, 'abs hex', '', { left: '-39px', top: '-44px' }));
+  // gauge: yellow (low) / lime (normal) / red (high)
+  const arc = (a0, a1, col) => {
+    const P = (a) => [160 + 130 * Math.cos(a * Math.PI / 180), 170 - 130 * Math.sin(a * Math.PI / 180)];
+    const [x0, y0] = P(a0), [x1, y1] = P(a1);
+    return `<path d="M${x0} ${y0}A130 130 0 0 1 ${x1} ${y1}" stroke="${col}" stroke-width="34" fill="none" stroke-linecap="round"/>`;
+  };
+  const gauge = box(r, '', `<svg width="320" height="200" viewBox="0 0 320 200">${arc(172, 124, '#ffd23d')}${arc(116, 64, LIME)}${arc(56, 8, RED)}
+      <g class="needle"><path d="M154 170L160 62l6 108z" fill="#fff"/></g><circle cx="160" cy="170" r="20" fill="#fff"/></svg>`,
+    330, 850, 320, 200, { boxShadow: 'none' });
+  const needle = gauge.querySelector('.needle');
+  needle.style.transformOrigin = '160px 170px';
+  const gLabel = pill(r, 'مستوى السكر', 330, 1010, 'pill');
+  const span = C.flowEnd - C.flowStart;
+  return (t) => {
+    const tubeIn = easeOut(prog(t, C.sc1b, 0.4));
+    tube.style.opacity = tubeIn > 0 ? 1 : 0;
+    tube.style.transform = `scaleX(${tubeIn.toFixed(4)})`;
+    sticker(label, popScale(t, C.vessel), -3);
+    const take = 1 + 0.08 * Math.sin(t * 14) * (t > C.flowStart && t < C.flowEnd + 0.6 ? 1 : 0);
+    sticker(muscle, popScale(t, C.muscle1) * take, 4);
+    hexes.forEach((d, i) => {
+      const t0 = C.flowStart + (i * span) / N;
+      const p = prog(t, t0, 1.1);
+      // travel right -> left along the tube, then dive into the muscle
+      const x = p < 0.6 ? lerp(1010, 760, easeInOut(p / 0.6)) : 760;
+      const y = p < 0.6 ? 520 : lerp(520, 860, easeInOut((p - 0.6) / 0.4));
+      place(d, x, y, t < t0 ? 0 : (p < 0.85 ? back(prog(t, t0, 0.3)) : 1 - (p - 0.85) / 0.15) * 0.8, i * 25);
+    });
+    sticker(gauge, popScale(t, C.gauge));
+    const fix = easeInOut(prog(t, C.gaugeFix, C.gaugeFixEnd - C.gaugeFix));
+    needle.style.transform = `rotate(${lerp(58, -4, fix) + Math.sin(t * 20) * 3 * (1 - fix)}deg)`;
+    sticker(gLabel, popScale(t, C.gauge + 0.12), 2);
+  };
+});
+
+// muscle + regular training -> better insulin sensitivity -> lower type-2 risk
+SC.add(C.sc1c, C.p2 - 0.45, (r) => {
+  const lifter = card(r, 'lifter', 770, 480, 240);
+  const checks = [0, 1].map((i) => box(r, 'card', CHECK(64), 700 + i * 140 - 70 + 70 - i * 0, 650, 100));
+  checks[0].style.left = 640 + 'px'; checks[1].style.left = 800 + 'px';
+  const lock = card(r, 'lock', 310, 480, 240);
+  const unlock = card(r, 'unlock', 310, 480, 240);
+  const key = card(r, 'key', 540, 480, 150);
+  const ins = pill(r, 'الأنسولين', 310, 655, 'pill');
+  const riskChip = pill(r, 'خطر السكري (النوع 2)', 540, 790, 'pill white');
+  const bar = el(r, 'abs hbar', '<i></i>', { left: '190px', top: '870px' });
+  const down = badge(r, ARROW(70, '#fff'), 945, 918, RED, 130);
+  const sp = sparks(r, [[200, 430], [420, 560], [880, 860], [160, 900], [540, 1010]]);
+  return (t) => {
+    const work = t >= C.lifter ? Math.abs(Math.sin((t - C.lifter) * 4)) * -18 : 0;
+    sticker(lifter, popScale(t, C.lifter), 0, `translateY(${work.toFixed(1)}px)`);
+    checks.forEach((d, i) => sticker(d, popScale(t, C.checks[i]), i ? 5 : -5));
+    // key flies into the lock, the lock opens
+    const fly = easeInOut(prog(t, C.key + 0.25, C.unlock - C.key - 0.25));
+    sticker(key, popScale(t, C.key, C.unlock), -20 + fly * 20, `translateX(${(-fly * 200).toFixed(1)}px)`);
+    const opened = t >= C.unlock;
+    sticker(lock, opened ? 0 : popScale(t, C.sc1c + 0.05), -4);
+    sticker(unlock, opened ? back(prog(t, C.unlock, 0.35)) : 0, -4);
+    sticker(ins, popScale(t, C.unlock + 0.05), 3);
+    sticker(riskChip, popScale(t, C.risk), -2);
+    bar.style.opacity = t >= C.risk ? 1 : 0;
+    bar.style.transform = `scaleX(${easeOut(prog(t, C.risk, 0.35)).toFixed(4)})`;
+    const lv = lerp(0.82, 0.22, easeInOut(prog(t, C.riskDown, C.riskEnd - C.riskDown)));
+    bar.firstChild.style.width = lv * 100 + '%';
+    bar.firstChild.style.background = lv > 0.5 ? RED : lv > 0.32 ? '#ffb02e' : LIME;
+    sticker(down, popScale(t, C.riskLabel), 0);
+    sparkle(sp, t, C.final1);
+  };
+});
+
+// ===================== 2 — when you get sick =====================
+SC.add(C.num2, C.sc2b - 0.22, (r) => {
+  const h = card(r, 'hospital', 540, 690, 340);
+  return (t) => sticker(h, popScale(t, C.num2 + 0.3), 4);
+});
+
+// a person gets seriously ill and stays in bed for a long time
+SC.add(C.sc2b, C.sc2c - 0.22, (r) => {
+  const bed = card(r, 'bed', 540, 860, 300);
+  const walk = card(r, 'walk', 540, 560, 260);
+  const sick = card(r, 'sick', 540, 560, 260);
+  const days = pill(r, `${icon('calendar')}<span class="n">1</span> يوم`, 540, 1040, 'pill');
+  const n = days.querySelector('.n');
+  return (t) => {
+    const isSick = t >= C.sick;
+    sticker(walk, isSick ? 1 - easeOut(prog(t, C.sick, 0.2)) : popScale(t, C.person), 0);
+    const toBed = easeInOut(prog(t, C.bed + 0.1, 0.5));
+    const shake = isSick && t < C.bed ? Math.sin((t - C.sick) * 40) * 8 : 0;
+    sticker(sick, isSick ? back(prog(t, C.sick, 0.35)) * lerp(1, 0.7, toBed) : 0, lerp(0, -90, toBed),
+            `translate(${shake.toFixed(1)}px, ${(toBed * 250).toFixed(1)}px)`);
+    // the face drops its card and lies on the bed
+    sick.style.background = `rgba(255,255,255,${(1 - toBed).toFixed(3)})`;
+    sick.style.boxShadow = `0 16px 0 rgba(0,0,0,${(0.45 * (1 - toBed)).toFixed(3)})`;
+    sticker(bed, popScale(t, C.bed), 0);
+    sticker(days, popScale(t, C.days), -2);
+    n.textContent = Math.max(1, Math.round(lerp(1, 30, easeInOut(prog(t, C.days, C.daysEnd - C.days)))));
+  };
+});
+
+// the body needs energy + protein to fight; muscle is the store it draws from
+SC.add(C.sc2c, C.sc2d - 0.22, (r) => {
+  const shield = card(r, 'shield', 540, 470, 240);
+  const virus = card(r, 'microbe', 900, 420, 170);
+  const pE = pill(r, `${BOLT(30)} الطاقة`, 770, 690, 'pill');
+  const pP = pill(r, `${icon('meat')}البروتين`, 310, 690, 'pill white');
+  const muscle = card(r, 'muscle', 540, 950, 220);
+  const stock = pill(r, 'مخزون', 830, 950, 'pill');
+  const N = 6;
+  const dots = Array.from({ length: N }, () => el(r, 'abs hex', '', { left: '-39px', top: '-44px' }));
+  return (t) => {
+    sticker(shield, popScale(t, C.shield), 0);
+    sticker(pE, popScale(t, C.pE), -3);
+    sticker(pP, popScale(t, C.pP), 3);
+    // virus charges at the shield and bounces off
+    const hit = prog(t, C.virus - 0.35, 0.35), bounce = easeOut(prog(t, C.virus, 0.5));
+    const vx = lerp(lerp(900, 690, hit * hit), 930, bounce);
+    sticker(virus, t < C.virus - 0.35 ? popScale(t, C.sc2c + 0.3) : 1 - prog(t, C.virus + 0.4, 0.3),
+            lerp(0, 40, bounce), `translateX(${(vx - 900).toFixed(1)}px)`);
+    sticker(muscle, popScale(t, C.muscle2), -4);
+    sticker(stock, popScale(t, C.stock), 4);
+    dots.forEach((d, i) => {
+      const t0 = C.flow2 + (i * (C.flow2End - C.flow2)) / N;
+      const p = easeInOut(prog(t, t0, 0.8));
+      const side = i % 2 ? 310 : 770;
+      place(d, lerp(540, side, p), lerp(900, 690, p), t < t0 ? 0 : Math.sin(prog(t, t0, 0.8) * Math.PI) * 0.7, i * 30);
+    });
+  };
+});
+
+// studies: patients with low muscle mass -> higher risk of complications
+SC.add(C.sc2d, C.sc2e - 0.22, (r) => {
+  const paper = box(r, 'paper', '<b></b><b></b><b></b><b></b><b></b>', 540, 620, 230, 290);
+  const strong = card(r, 'muscle', 770, 440, 190);
+  const weak = card(r, 'muscle', 310, 440, 190);
+  const bars = [770, 310].map((x) => el(r, 'abs vbar', '<i></i>', { left: x - 85 + 'px', top: '560px', height: '400px' }));
+  const label = pill(r, 'خطر المضاعفات', 540, 1050, 'pill red');
+  return (t) => {
+    sticker(paper, popScale(t, C.paper, C.barsIn), -6);
+    const shrink = easeInOut(prog(t, C.lowMuscle, 0.5));
+    sticker(strong, popScale(t, C.barsIn), 4);
+    sticker(weak, popScale(t, C.barsIn + 0.1) * lerp(1, 0.6, shrink), -4);
+    weak.style.filter = `grayscale(${shrink * 0.9}) brightness(${1 - shrink * 0.3})`;
+    const up = easeInOut(prog(t, C.riskUp, C.riskUpEnd - C.riskUp));
+    bars.forEach((b, i) => {
+      const s = easeOut(prog(t, C.barsIn + 0.15 + i * 0.1, 0.35));
+      b.style.opacity = s > 0 ? 1 : 0;
+      b.style.transformOrigin = '50% 100%';
+      b.style.transform = `scaleY(${s.toFixed(4)})`;
+      b.firstChild.style.height = (i ? lerp(0.1, 0.9, up) : lerp(0.1, 0.25, up)) * 100 + '%';
+    });
+    sticker(label, popScale(t, C.riskUp), -2);
+  };
+});
+
+// muscle isn't only about looks — it matters when fighting disease
+SC.add(C.sc2e, C.p3 - 0.45, (r) => {
+  const muscle = card(r, 'muscle', 540, 790, 290);
+  const mirror = card(r, 'mirror', 290, 470, 200);
+  const cross = badge(r, CROSS(60), 370, 390, RED, 110);
+  const shield = card(r, 'shield', 790, 470, 200);
+  const ok = badge(r, CHECK(64), 870, 390, LIME, 110);
+  const sp = sparks(r, [[300, 700], [780, 700], [540, 560], [240, 980], [840, 990]]);
+  return (t) => {
+    sticker(muscle, popScale(t, C.muscle3) * (1 + 0.06 * Math.sin(prog(t, C.final2, 0.5) * Math.PI)), 0);
+    sticker(mirror, popScale(t, C.mirror), -5);
+    mirror.style.filter = `grayscale(${prog(t, C.cross + 0.15, 0.3) * 0.7})`;
+    sticker(cross, popScale(t, C.cross + 0.15), -8);
+    sticker(shield, popScale(t, C.shield2), 5);
+    sticker(ok, popScale(t, C.shield2 + 0.12), 8);
+    sparkle(sp, t, C.final2);
+  };
+});
+
+// ===================== 3 — falls & injuries =====================
+SC.add(C.num3, C.sc3b - 0.22, (r) => {
+  const bone = card(r, 'bone', 540, 690, 340);
+  return (t) => sticker(bone, popScale(t, C.num3 + 0.3), -6);
+});
+
+// with age, muscle mass + strength drop -> balance and movement suffer
+SC.add(C.sc3b, C.sc3c - 0.22, (r) => {
+  const age = pill(r, `العمر <span class="n">30</span>`, 540, 430, 'pill white');
+  const n = age.querySelector('.n');
+  const man = card(r, 'oldman', 540, 670, 260);
+  const muscleChip = pill(r, `${icon('muscle')}الكتلة العضلية`, 540, 860, 'pill');
+  const bar = el(r, 'abs hbar', '<i></i>', { left: '190px', top: '930px' });
+  const wob = pill(r, '⚠ التوازن', 860, 600, 'pill red');
+  return (t) => {
+    sticker(age, popScale(t, C.age), -2);
+    n.textContent = Math.round(lerp(30, 70, easeInOut(prog(t, C.age + 0.2, C.ageEnd - C.age - 0.2))));
+    const w = t >= C.wobble ? Math.sin((t - C.wobble) * 6) * 12 * Math.min(1, (t - C.wobble) * 3) : 0;
+    man.style.transformOrigin = '50% 100%';
+    sticker(man, popScale(t, C.age + 0.1), w);
+    sticker(muscleChip, popScale(t, C.loseStart - 0.25), 2);
+    bar.style.opacity = t >= C.loseStart - 0.25 ? 1 : 0;
+    bar.style.transform = `scaleX(${easeOut(prog(t, C.loseStart - 0.25, 0.35)).toFixed(4)})`;
+    const lv = lerp(0.9, 0.35, easeInOut(prog(t, C.loseStart, C.loseEnd - C.loseStart)));
+    bar.firstChild.style.width = lv * 100 + '%';
+    bar.firstChild.style.background = lv > 0.6 ? LIME : '#ffb02e';
+    sticker(wob, popScale(t, C.wobbleLabel), 6);
+  };
+});
+
+// strong legs + glutes and balance training -> fewer falls, injuries, fractures
+SC.add(C.sc3c, END, (r) => {
+  const leg = card(r, 'leg', 770, 470, 230);
+  const yoga = card(r, 'yoga', 310, 470, 230);
+  const ok = badge(r, CHECK(60), 390, 380, LIME, 104);
+  const bar = el(r, 'abs hbar', '<i></i>', { left: '190px', top: '640px' });
+  const row = el(r, 'abs chips', '', { top: '820px' });
+  const chips = ['السقوط', 'الإصابات', 'الكسور'].map((txt) =>
+    el(row, 'sticker bigpill', `${txt}<span class="circle" style="display:flex;width:62px;height:62px;background:${RED};align-items:center;justify-content:center;margin-top:8px">${ARROW(40, '#fff')}</span>`));
+  const sp = sparks(r, [[200, 700], [880, 700], [540, 1000], [150, 450], [930, 980]]);
+  return (t) => {
+    const flex = t >= C.legFill ? Math.sin((t - C.legFill) * 6) * 6 : 0;
+    sticker(leg, popScale(t, C.leg), flex);
+    bar.style.opacity = t >= C.leg + 0.1 ? 1 : 0;
+    bar.style.transform = `scaleX(${easeOut(prog(t, C.leg + 0.1, 0.35)).toFixed(4)})`;
+    bar.firstChild.style.width = lerp(0.35, 0.95, easeInOut(prog(t, C.legFill, C.legFillEnd - C.legFill))) * 100 + '%';
+    sticker(yoga, popScale(t, C.balance), 0, `translateY(${(Math.sin(t * 3) * 8).toFixed(1)}px)`);
+    sticker(ok, popScale(t, C.balance + 0.3), 8);
+    chips.forEach((d, i) => sticker(d, popScale(t, C.risks[i]), [-3, 2, -2][i]));
+    sparkle(sp, t, C.final3);
+  };
+});
+
+function setTime(t) {
+  updateCaptions(t);
+  HEADS.forEach((h) => {
+    sticker(h.num, popScale(t, h.at, h.out), -6);
+    fade(h.title, popScale(t, h.titleAt, h.out));
+  });
+  SC.draw(t);
+}
+UI.boot(setTime, DURATION);
+</script>
+</body>
+</html>
