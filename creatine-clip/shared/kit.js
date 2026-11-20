@@ -15,7 +15,7 @@
       const pause = (g.match(/\|/g) || []).length * 1.3;
       const idx = [];
       g.replace(/\|/g, '').trim().split(/\s+/).forEach((raw) => {
-        const text = clean(raw);
+        const text = clean(raw).replace(/_/g, ' '); // "BRO_SPLIT" = one caption word with a space
         const w = weight(text);
         idx.push(words.length);
         words.push({ text, group: gi, start: +(start + cursor * unit).toFixed(3), end: +(start + (cursor + w) * unit).toFixed(3) });
@@ -58,7 +58,8 @@
   K.rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
   // Word-by-word captions: returns update(t).
-  K.captions = function (capEl, TL) {
+  K.captions = function (capEl, TL, opts = {}) {
+    const hi = opts.hi || '#c6ff3d';
     const { words, groups } = TL;
     const els = words.map((w) => { const s = document.createElement('span'); s.textContent = w.text; return s; });
     let shown = -1;
@@ -74,7 +75,7 @@
         if (t < w.start) { el.style.opacity = 0; return; }
         const p = K.prog(t, w.start, 0.17);
         el.style.opacity = 1;
-        el.style.color = t < w.end + 0.02 ? '#c6ff3d' : '#fff';
+        el.style.color = t < w.end + 0.02 ? hi : '#fff';
         el.style.transform = `translateY(${(1 - K.easeOut(p)) * 26}px) scale(${K.lerp(0.7, 1, K.back(p)).toFixed(4)})`;
       });
     };

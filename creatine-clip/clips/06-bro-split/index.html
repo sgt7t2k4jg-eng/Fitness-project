@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>BRO SPLIT</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<link rel="stylesheet" href="../../shared/ui.css">
+<style>
+  :root { --gold: #f3c14b; --gold2: #b8862b; }
+  #stage { background:
+      radial-gradient(1000px 800px at 50% 30%, rgba(243,193,75,.08), transparent 70%),
+      linear-gradient(180deg, #0b0b0c 0%, #050505 100%); }
+  #grid { opacity: .35; }
+  .gold { color: var(--gold); }
+  .goldtxt { background: linear-gradient(180deg, #ffe7a3 0%, #f3c14b 45%, #b8862b 100%);
+             -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lat { direction: ltr; font-family: Cairo, sans-serif; }
+
+  /* intro title */
+  #title { left: 0; width: 1080px; top: 0; height: 0; }
+  #ttl1 { left: 0; width: 1080px; top: 410px; text-align: center; font-size: 96px; }
+  #ttl2 { left: 0; width: 1080px; top: 560px; text-align: center; font-size: 190px; line-height: 1.1; letter-spacing: 4px;
+          filter: drop-shadow(0 10px 0 rgba(0,0,0,.6)); }
+  #ttlLine { left: 340px; top: 800px; width: 400px; height: 10px; border-radius: 5px; background: var(--gold); }
+
+  /* intro: muscle chips + week tiles */
+  .gchip { height: 100px; padding: 0 40px 6px; border-radius: 50px; border: 5px solid var(--gold); color: var(--gold);
+           background: rgba(243,193,75,.08); font-size: 50px; line-height: 92px; white-space: nowrap; direction: ltr; }
+  .tile { width: 118px; height: 170px; border-radius: 28px; border: 5px solid rgba(255,255,255,.25); background: #141416;
+          display: flex; flex-direction: column; align-items: center; justify-content: center; direction: ltr; }
+  .tile small { font-size: 26px; color: rgba(255,255,255,.6); line-height: 1; }
+  .tile b { font-size: 70px; line-height: 1.1; color: #fff; }
+  .tile.on { background: linear-gradient(180deg, #ffe08a, #e3a92f); border-color: #ffe08a; }
+  .tile.on small, .tile.on b { color: var(--ink); }
+  .tile img { width: 60px; height: 60px; margin-top: 6px; }
+
+  /* intro: week table */
+  .wrow { left: 70px; width: 940px; height: 98px; border-radius: 26px; background: #141416; border: 4px solid rgba(255,255,255,.1);
+          display: flex; align-items: center; direction: ltr; padding: 0 26px 0 14px; gap: 24px; }
+  .wrow .dn { width: 72px; height: 72px; border-radius: 50%; background: var(--gold); color: var(--ink); font-size: 44px;
+              display: flex; align-items: center; justify-content: center; padding-bottom: 4px; flex: none; }
+  .wrow .en { font-size: 44px; color: var(--gold); white-space: nowrap; }
+  .wrow .ar { margin-left: auto; font-size: 38px; color: #fff; direction: rtl; white-space: nowrap; font-weight: 700; }
+  .wrow.rest { background: #0e0e10; }
+  .wrow.rest .dn { background: #3a3a3f; color: #fff; }
+  .wrow.rest .en { color: rgba(255,255,255,.55); }
+  .wrow.rest img { width: 50px; height: 50px; }
+  .wrow.hot { border-color: var(--gold); }
+
+  /* day pages */
+  .page { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .dchip { left: 0; width: 1080px; top: 150px; display: flex; justify-content: center; }
+  .dchip span { height: 76px; padding: 0 34px 4px; border-radius: 38px; border: 4px solid var(--gold); color: var(--gold);
+                font-size: 42px; line-height: 70px; letter-spacing: 3px; direction: ltr; }
+  .ptitle { left: 0; width: 1080px; top: 236px; text-align: center; font-size: 96px; line-height: 1.15; direction: ltr; white-space: nowrap; letter-spacing: 1px; }
+  .psub { left: 0; width: 1080px; top: 352px; text-align: center; font-size: 54px; color: #fff; }
+  .glabel { left: 80px; width: 920px; height: 56px; display: flex; align-items: center; gap: 20px; direction: ltr;
+            color: var(--gold); font-size: 32px; letter-spacing: 4px; }
+  .glabel::after { content: ''; flex: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, rgba(243,193,75,.6), transparent); }
+  .xrow { left: 50px; width: 980px; height: 132px; border-radius: 26px; background: #141416; border: 3px solid rgba(255,255,255,.08);
+          display: flex; align-items: center; direction: ltr; gap: 26px; padding: 0 20px 0 10px; }
+  .xrow .ph { position: relative; width: 206px; height: 120px; border-radius: 18px; overflow: hidden; flex: none; background: #222; }
+  .xrow .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .xrow .no { font-size: 34px; color: var(--gold); width: 52px; flex: none; }
+  .xrow .nm { font-size: 46px; color: #fff; white-space: nowrap; }
+  .restbig { left: 0; width: 1080px; top: 900px; text-align: center; font-size: 230px; line-height: 1; letter-spacing: 8px; direction: ltr; }
+  .restar { left: 0; width: 1080px; top: 1150px; text-align: center; font-size: 90px; color: #fff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="intro" class="abs page"></div>
+  <div id="pages"></div>
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="../../shared/ui.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, pages: PAGES, DURATION, ROW } = TL;
+const { prog, lerp, easeOut, easeInOut, back, popScale, sticker } = KIT;
+const { el, box, card, icon } = UI;
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL, { hi: '#f3c14b' });
+const intro = document.getElementById('intro');
+
+// ======================= INTRO (0 .. 40s) =======================
+const ttl1 = el(intro, 'abs', 'شنو هو'); ttl1.id = 'ttl1';
+const ttl2 = el(intro, 'abs goldtxt lat', 'BRO SPLIT'); ttl2.id = 'ttl2';
+const ttlLine = el(intro, 'abs'); ttlLine.id = 'ttlLine';
+
+const lifter = card(intro, 'lifter', 540, 600, 280);
+// muscle groups (they get assigned to days 1,2,3,5,6)
+const GROUPS = ['CHEST', 'BACK', 'LEGS', 'SHOULDERS', 'ARMS'];
+const CHIP_POS = [[300, 470], [600, 470], [860, 470], [380, 600], [730, 600]];
+const chips = GROUPS.map((g, i) => {
+  const d = el(intro, 'abs sticker gchip', g);
+  d._x = CHIP_POS[i][0]; d._y = CHIP_POS[i][1];
+  return d;
+});
+const TILE_X = (i) => 85 + i * 132 + 59, TILE_Y = 860;
+const tiles = Array.from({ length: 7 }, (_, i) => {
+  const d = box(intro, 'tile', `<small>DAY</small><b>${i + 1}</b>`, TILE_X(i), TILE_Y, 118, 170, { boxShadow: 'none' });
+  return d;
+});
+const TARGET = [0, 1, 2, 4, 5];
+const restIcons = [3, 6].map((i) => box(intro, 'circle', icon('bed', 54), TILE_X(i), TILE_Y + 130, 84, 84, { background: '#fff' }));
+
+// week table
+const ROWS = PAGES.map((p, i) => {
+  const r = el(intro, 'abs wrow' + (p.rest ? ' rest' : ''),
+    `<div class="dn">${p.day}</div><div class="en">${p.en}</div>${p.rest ? icon('bed') : ''}<div class="ar">${p.ar}</div>`,
+    { top: 330 + i * 112 + 'px' });
+  return r;
+});
+
+function drawIntro(t) {
+  const on = t < C.introEnd + 0.3;
+  intro.style.display = on ? 'block' : 'none';
+  if (!on) return;
+  intro.style.opacity = (1 - prog(t, C.introEnd - 0.05, 0.3)).toFixed(3);
+
+  // title: big in the middle, then shrinks to the top
+  const sh = easeInOut(prog(t, C.shrink, 0.5));
+  const tIn = popScale(t, C.title);
+  ttl2.style.opacity = tIn > 0.01 ? 1 : 0;
+  ttl2.style.transform = `translateY(${lerp(0, -440, sh).toFixed(1)}px) scale(${(Math.max(0, tIn) * lerp(1, 0.55, sh)).toFixed(4)})`;
+  ttl2.style.transformOrigin = '50% 50%';
+  KIT.sticker(ttl1, popScale(t, 0.3, C.shrink));
+  ttlLine.style.opacity = t >= C.title + 0.2 ? 1 - sh : 0;
+  ttlLine.style.transform = `scaleX(${easeOut(prog(t, C.title + 0.2, 0.4)).toFixed(4)})`;
+
+  sticker(lifter, popScale(t, C.lifter, C.chips[0] - 0.2), 0, `translateY(${(Math.sin(t * 4) * 8).toFixed(1)}px)`);
+
+  const hideB = C.table - 0.15;
+  chips.forEach((d, i) => {
+    const t0 = C.assign + 0.25 + i * ((C.assignEnd - C.assign - 0.3) / 5);
+    const f = easeInOut(prog(t, t0 - 0.35, 0.35));
+    const tx = TILE_X(TARGET[i]), ty = TILE_Y;
+    const x = lerp(d._x, tx, f), y = lerp(d._y, ty, f);
+    const w = d.offsetWidth || 300;
+    d.style.left = x - w / 2 + 'px'; d.style.top = y - 50 + 'px';
+    sticker(d, t < t0 ? popScale(t, C.chips[i]) * lerp(1, 0.4, f) : 0, (i % 2 ? 3 : -3) * (1 - f));
+    tiles[TARGET[i]].classList.toggle('on', t >= t0);
+  });
+  tiles.forEach((d, i) => {
+    const s = t < hideB ? popScale(t, C.tiles + i * 0.09) : 1 - easeOut(prog(t, hideB, 0.2));
+    const bump = TARGET.includes(i) ? 1 + 0.15 * Math.sin(prog(t, C.assign + 0.25 + TARGET.indexOf(i) * ((C.assignEnd - C.assign - 0.3) / 5), 0.3) * Math.PI) : 1;
+    sticker(d, s * bump);
+  });
+  restIcons.forEach((d, i) => sticker(d, t < hideB ? popScale(t, C.assignEnd + i * 0.15) : 1 - easeOut(prog(t, hideB, 0.2)), i ? 6 : -6));
+
+  ROWS.forEach((r, i) => {
+    const p = back(prog(t, C.rows[i], 0.35));
+    r.style.opacity = t >= C.rows[i] ? 1 : 0;
+    r.style.transform = `translateX(${((1 - Math.min(1, p)) * 120).toFixed(1)}px) scale(${lerp(0.85, 1, Math.min(1, p)).toFixed(4)})`;
+    const next = i + 1 < ROWS.length ? C.rows[i + 1] : C.introEnd;
+    r.classList.toggle('hot', t >= C.rows[i] && t < next);
+  });
+}
+
+// ======================= DAY PAGES =======================
+const PG = PAGES.map((p) => {
+  const root = el(document.getElementById('pages'), 'abs page');
+  const chip = el(root, 'abs dchip', `<span>DAY ${p.day}</span>`);
+  const items = [];
+  if (p.rest) {
+    const bed = card(root, 'bed', 540, 640, 300);
+    const big = el(root, 'abs restbig goldtxt', 'REST');
+    const ar = el(root, 'abs restar', p.ar);
+    return { p, root, chip, rest: { bed, big, ar } };
+  }
+  const title = el(root, 'abs ptitle goldtxt', p.en);
+  const sub = el(root, 'abs psub', p.ar);
+  let y = 470, k = 0;
+  p.groups.forEach(([label, list]) => {
+    items.push({ d: el(root, 'abs glabel', label, { top: y + 'px' }), k, label: true });
+    y += 58;
+    list.forEach((x) => {
+      const imgs = x.frames.map((f) => `<img src="${f}">`).join('');
+      const d = el(root, 'abs xrow', `<div class="ph">${imgs}</div><div class="no">${String(k + 1).padStart(2, '0')}</div><div class="nm">${x.name}</div>`, { top: y + 'px' });
+      items.push({ d, k, imgs: [...d.querySelectorAll('img')] });
+      y += 138; k++;
+    });
+  });
+  return { p, root, chip, title, sub, items };
+});
+
+function drawPages(t) {
+  PG.forEach(({ p, root, chip, title, sub, items, rest }) => {
+    const on = t >= p.from - 0.02 && t < p.to + 0.25;
+    root.style.display = on ? 'block' : 'none';
+    if (!on) return;
+    // slide in from the right, fade out at the end
+    const inP = easeOut(prog(t, p.from, 0.35));
+    root.style.opacity = (Math.min(inP * 1.5, 1) * (1 - prog(t, p.to - 0.05, 0.25))).toFixed(3);
+    root.style.transform = `translateX(${((1 - inP) * 160).toFixed(1)}px)`;
+    sticker(chip, popScale(t, p.from + 0.1));
+    if (rest) {
+      sticker(rest.bed, popScale(t, p.from + 0.15), -5, `translateY(${(Math.sin(t * 2.5) * 10).toFixed(1)}px)`);
+      sticker(rest.big, popScale(t, p.from + 0.35));
+      sticker(rest.ar, popScale(t, p.from + 0.55));
+      return;
+    }
+    sticker(title, popScale(t, p.from + 0.25));
+    sticker(sub, popScale(t, p.from + 0.45));
+    items.forEach((it) => {
+      const at = p.from + 1.2 + it.k * ROW - (it.label ? 0.18 : 0);
+      const a = prog(t, at, 0.35);
+      it.d.style.opacity = a > 0 ? Math.min(1, a * 2).toFixed(3) : 0;
+      it.d.style.transform = `translateX(${((1 - easeOut(a)) * 90).toFixed(1)}px)`;
+      if (it.imgs && it.imgs.length > 1) {
+        // loop start <-> end position photos (looks like a rep)
+        const ph = ((t - at) % 1.6 + 1.6) % 1.6;
+        const o = ph < 0.6 ? 0 : ph < 0.8 ? (ph - 0.6) / 0.2 : ph < 1.4 ? 1 : 1 - (ph - 1.4) / 0.2;
+        it.imgs[1].style.opacity = o.toFixed(3);
+      }
+    });
+  });
+}
+
+function setTime(t) {
+  updateCaptions(t);
+  document.getElementById('caption').style.display = t < C.introEnd - 0.1 ? 'flex' : 'none';
+  drawIntro(t);
+  drawPages(t);
+}
+UI.boot(setTime, DURATION);
+</script>
+</body>
+</html>

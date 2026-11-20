@@ -52,6 +52,14 @@ const OUT = TL.partsOnly ? path.join(BUILD, TL.OUT) : path.join(ROOT, 'Exports',
   await browser.close();
   console.log(`wrote ${OUT} (${frames} frames, ${TL.DURATION.toFixed(2)}s)`);
 
+  // Optional stills (e.g. one image per page) captured from the finished frames.
+  for (const st of TL.stills || []) {
+    const dst = path.join(ROOT, 'Exports', st.name);
+    fs.mkdirSync(path.dirname(dst), { recursive: true });
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', String(st.at), '-i', OUT, '-frames:v', '1', '-q:v', '2', dst], { stdio: 'inherit' });
+    console.log(`wrote ${dst}`);
+  }
+
   // Optional cuts (frame-accurate re-encode, tiny audio fades at the cut points).
   for (const part of TL.parts || []) {
     const from = Math.round(part.from * TL.FPS) / TL.FPS;
