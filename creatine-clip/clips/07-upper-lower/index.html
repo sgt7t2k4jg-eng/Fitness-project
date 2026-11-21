@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>UPPER / LOWER</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<link rel="stylesheet" href="../../shared/ui.css">
+<style>
+  :root { --gold: #f3c14b; }
+  #stage { background:
+      radial-gradient(1000px 800px at 50% 30%, rgba(243,193,75,.08), transparent 70%),
+      linear-gradient(180deg, #0b0b0c 0%, #050505 100%); }
+  #grid { opacity: .35; }
+  .goldtxt { background: linear-gradient(180deg, #ffe7a3 0%, #f3c14b 45%, #b8862b 100%);
+             -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .page { left: 0; top: 0; width: 1080px; height: 1920px; }
+
+  /* intro title */
+  #ttl { left: 0; width: 1080px; top: 580px; text-align: center; font-size: 138px; line-height: 1.1; direction: ltr; white-space: nowrap;
+         filter: drop-shadow(0 10px 0 rgba(0,0,0,.6)); }
+  #ttlLine { left: 340px; top: 790px; width: 400px; height: 10px; border-radius: 5px; background: var(--gold); }
+
+  /* intro: upper / lower panels */
+  .panel { left: 70px; width: 940px; height: 300px; border-radius: 40px; border: 4px solid rgba(243,193,75,.55); background: rgba(20,20,22,.9); }
+  .panel .hd { position: absolute; right: 36px; top: 26px; display: flex; align-items: center; gap: 24px; }
+  .panel .ic { width: 110px; height: 110px; border-radius: 26px; background: #fff; display: flex; align-items: center; justify-content: center; }
+  .panel .ic img { width: 70%; height: 70%; }
+  .panel .nm { font-size: 84px; line-height: 1; direction: ltr; padding-bottom: 8px; }
+  .panel .sb { font-size: 44px; color: #fff; padding-bottom: 4px; }
+  .panel .chips { position: absolute; right: 36px; left: 36px; top: 168px; display: flex; gap: 18px; direction: rtl; }
+  .wchip { height: 92px; padding: 0 34px 8px; border-radius: 46px; background: #fff; color: var(--ink); font-size: 48px; line-height: 84px; white-space: nowrap; }
+
+  /* section header (number + question) */
+  .sec { left: 0; width: 1080px; top: 300px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+  .sec .n { width: 84px; height: 84px; border-radius: 50%; background: var(--gold); color: var(--ink); font-size: 54px;
+            display: flex; align-items: center; justify-content: center; padding-bottom: 4px; flex: none; }
+  .sec .q { font-size: 62px; white-space: nowrap; }
+
+  /* week rows */
+  .wk { left: 70px; width: 940px; height: 90px; border-radius: 24px; background: #141416; border: 4px solid rgba(255,255,255,.08);
+        display: flex; align-items: center; padding: 0 34px 6px; gap: 26px; }
+  .wk::before { content: ''; position: absolute; right: 0; top: 20px; bottom: 20px; width: 8px; border-radius: 4px; background: var(--gold); }
+  .wk .d { width: 200px; flex: none; font-size: 50px; }
+  .wk .w { font-size: 50px; direction: ltr; color: #fff; }
+  .wk.up .w { color: var(--gold); }
+  .wk.rest { background: #0e0e10; }
+  .wk.rest::before { background: #3a3a3f; }
+  .wk.rest .w { color: rgba(255,255,255,.5); direction: rtl; }
+  .wk.hot { border-color: var(--gold); }
+
+  /* benefits */
+  .ben { left: 70px; width: 940px; height: 206px; border-radius: 36px; background: #141416; border: 4px solid rgba(255,255,255,.1);
+         display: flex; align-items: center; gap: 30px; padding: 0 34px; }
+  .ben .ic { position: relative; width: 140px; height: 140px; border-radius: 32px; background: #fff; flex: none; display: flex; align-items: center; justify-content: center; }
+  .ben .ic img { width: 66%; height: 66%; }
+  .ben .tx { font-size: 50px; line-height: 1.3; }
+  .ben .tx small { display: block; font-size: 38px; color: rgba(255,255,255,.7); font-weight: 700; }
+  .x2 { position: absolute; left: -18px; top: -18px; width: 82px; height: 82px; border-radius: 50%; background: var(--gold); color: var(--ink);
+        font-size: 40px; display: flex; align-items: center; justify-content: center; direction: ltr; border: 6px solid #141416; padding-bottom: 4px; }
+  .halves { display: flex; gap: 8px; direction: ltr; }
+  .halves i { width: 46px; height: 92px; border-radius: 12px; background: var(--gold); }
+  .qchip { margin-right: auto; height: 76px; padding: 0 26px 6px; border-radius: 38px; background: var(--gold); color: var(--ink);
+           font-size: 38px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .batt { margin-right: auto; position: relative; width: 150px; height: 74px; border: 7px solid #fff; border-radius: 18px; overflow: hidden; flex: none; }
+  .batt i { position: absolute; top: 0; bottom: 0; left: 0; width: 20%; background: var(--gold); }
+
+  /* day pages (same as BRO SPLIT) */
+  .dchip { left: 0; width: 1080px; top: 150px; display: flex; justify-content: center; }
+  .dchip span { height: 76px; padding: 0 34px 6px; border-radius: 38px; border: 4px solid var(--gold); color: var(--gold); font-size: 44px; line-height: 66px; }
+  .ptitle { left: 0; width: 1080px; top: 236px; text-align: center; font-size: 110px; line-height: 1.1; direction: ltr; white-space: nowrap; letter-spacing: 2px; }
+  .psub { left: 0; width: 1080px; top: 362px; text-align: center; font-size: 54px; color: #fff; }
+  .glabel { left: 80px; width: 920px; height: 56px; display: flex; align-items: center; gap: 20px; direction: ltr;
+            color: var(--gold); font-size: 32px; letter-spacing: 4px; }
+  .glabel::after { content: ''; flex: 1; height: 3px; border-radius: 2px; background: linear-gradient(90deg, rgba(243,193,75,.6), transparent); }
+  .xrow { left: 50px; width: 980px; height: 132px; border-radius: 26px; background: #141416; border: 3px solid rgba(255,255,255,.08);
+          display: flex; align-items: center; direction: ltr; gap: 26px; padding: 0 20px 0 10px; }
+  .xrow .ph { position: relative; width: 206px; height: 120px; border-radius: 18px; overflow: hidden; flex: none; background: #222; }
+  .xrow .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .xrow .no { font-size: 34px; color: var(--gold); width: 52px; flex: none; }
+  .xrow .nm { font-size: 46px; color: #fff; white-space: nowrap; }
+  .restbig { left: 0; width: 1080px; top: 900px; text-align: center; font-size: 230px; line-height: 1; letter-spacing: 8px; direction: ltr; }
+  .restar { left: 0; width: 1080px; top: 1150px; text-align: center; font-size: 90px; color: #fff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="intro" class="abs page"></div>
+  <div id="pages"></div>
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="../../shared/ui.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, pages: PAGES, DURATION, ROW } = TL;
+const { prog, lerp, easeOut, easeInOut, back, popScale, sticker } = KIT;
+const { el, card, icon, CHECK } = UI;
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL, { hi: '#f3c14b' });
+const intro = document.getElementById('intro');
+const X = (cls, html, style = {}) => el(intro, 'abs ' + cls, html, style);
+// sub-scene visibility inside the intro
+const vis = (d, from, to, t) => {
+  const on = t >= from - 0.02 && t < to + 0.26;
+  d.style.display = on ? '' : 'none';
+  if (on) d.style.opacity = (1 - prog(t, to - 0.04, 0.26)).toFixed(3);
+  return on;
+};
+
+// ---------------- title ----------------
+const ttl = X('goldtxt', 'UPPER / LOWER'); ttl.id = 'ttl';
+const ttlLine = X(''); ttlLine.id = 'ttlLine';
+
+// ---------------- scene B: the two halves of the body ----------------
+const sB = X('page', '');
+const panel = (y, name, sub, ic, chips) => {
+  const p = el(sB, 'abs panel', `<div class="hd"><div class="ic">${icon(ic)}</div><div class="nm goldtxt">${name}</div><div class="sb">${sub}</div></div><div class="chips"></div>`, { top: y + 'px' });
+  const row = p.querySelector('.chips');
+  return { p, ic: p.querySelector('.ic'), nm: p.querySelector('.nm'), sb: p.querySelector('.sb'), chips: chips.map((c) => el(row, 'sticker wchip', c)) };
+};
+const UP = panel(400, 'UPPER', 'الجزء العلوي', 'muscle', ['الصدر', 'الظهر', 'الكتاف', 'الذراعين']);
+const LO = panel(750, 'LOWER', 'الجزء السفلي', 'leg', ['الفخاد', 'المؤخرة', 'السمانة']);
+
+// ---------------- scene C: the week ----------------
+const sC = X('page', '');
+const sec = (parent, n, q) => el(parent, 'abs sec', `<div class="n">${n}</div><div class="q">${q}</div>`);
+const secC = sec(sC, 2, 'كيفاش كتقسم أيام التدريب؟');
+const WEEK = [['الإثنين', 'UPPER A', 'up'], ['الثلاثاء', 'LOWER A', ''], ['الأربعاء', 'راحة', 'rest'], ['الخميس', 'UPPER B', 'up'],
+              ['الجمعة', 'LOWER B', ''], ['السبت', 'راحة', 'rest'], ['الأحد', 'راحة', 'rest']];
+const wk = WEEK.map(([d, w, cls], i) => el(sC, 'abs wk ' + cls, `<div class="d goldtxt">${d}</div><div class="w">${w}</div>`, { top: 420 + i * 102 + 'px' }));
+
+// ---------------- scene D: benefits ----------------
+const sD = X('page', '');
+const secD = sec(sD, 3, 'شنو المميزات ديالو؟');
+const b1 = el(sD, 'abs ben', `<div class="ic">${icon('muscle')}<div class="x2">×2</div></div><div class="tx">كل عضلة<small>جوج مرات فالسيمانة</small></div>`, { top: '430px' });
+const b2 = el(sD, 'abs ben', `<div class="halves"><i></i><i></i></div><div class="tx">الحجم التدريبي<small>على جوج حصص</small></div><div class="qchip">${CHECK(40)}جودة الأداء</div>`, { top: '660px' });
+const b3 = el(sD, 'abs ben', `<div class="ic">${icon('bed')}</div><div class="tx">أيام راحة كافية<small>تسترجع الطاقة ديالك</small></div><div class="batt"><i></i></div>`, { top: '890px' });
+const halves = [...b2.querySelectorAll('.halves i')];
+const qchip = b2.querySelector('.qchip'), x2 = b1.querySelector('.x2'), battFill = b3.querySelector('.batt i');
+
+function drawIntro(t) {
+  const on = t < C.introEnd + 0.3;
+  intro.style.display = on ? 'block' : 'none';
+  if (!on) return;
+  intro.style.opacity = (1 - prog(t, C.introEnd - 0.05, 0.3)).toFixed(3);
+
+  const sh = easeInOut(prog(t, C.shrink, 0.5));
+  const tIn = popScale(t, C.title);
+  ttl.style.opacity = tIn > 0.01 ? 1 : 0;
+  ttl.style.transform = `translateY(${lerp(0, -440, sh).toFixed(1)}px) scale(${(Math.max(0, tIn) * lerp(1, 0.5, sh)).toFixed(4)})`;
+  ttlLine.style.opacity = t >= C.title + 0.2 ? 1 - sh : 0;
+  ttlLine.style.transform = `scaleX(${easeOut(prog(t, C.title + 0.2, 0.4)).toFixed(4)})`;
+
+  if (vis(sB, C.panels, C.sec2 - 0.2, t)) {
+    [[UP, 0, C.upper, C.upperSub, C.upperChips], [LO, 0.15, C.lower, C.lowerSub, C.lowerChips]].forEach(([P, d, nmAt, sbAt, chips]) => {
+      const s = easeOut(prog(t, C.panels + d, 0.4));
+      P.p.style.opacity = s > 0 ? 1 : 0;
+      P.p.style.transform = `translateX(${((1 - s) * 140).toFixed(1)}px)`;
+      sticker(P.ic, popScale(t, nmAt), -5);
+      sticker(P.nm, popScale(t, nmAt + 0.08));
+      sticker(P.sb, popScale(t, sbAt));
+      P.chips.forEach((ch, i) => sticker(ch, popScale(t, chips[i]), i % 2 ? 3 : -3));
+    });
+  }
+  if (vis(sC, C.sec2, C.sec3 - 0.2, t)) {
+    sticker(secC, popScale(t, C.sec2 + 0.05));
+    wk.forEach((r, i) => {
+      const p = back(prog(t, C.rows[i], 0.35));
+      r.style.opacity = t >= C.rows[i] ? 1 : 0;
+      r.style.transform = `translateX(${((1 - Math.min(1, p)) * 120).toFixed(1)}px) scale(${lerp(0.85, 1, Math.min(1, p)).toFixed(4)})`;
+      const next = i < 5 ? C.rows[i + 1] : C.sec3;
+      r.classList.toggle('hot', t >= C.rows[Math.min(i, 5)] && t < (i >= 5 ? C.sec3 : next));
+    });
+  }
+  if (vis(sD, C.sec3, 1e9, t)) {
+    sticker(secD, popScale(t, C.sec3 + 0.05));
+    [[b1, C.ben1], [b2, C.ben2], [b3, C.ben3]].forEach(([b, at]) => {
+      const p = easeOut(prog(t, at, 0.4));
+      b.style.opacity = p > 0 ? Math.min(1, p * 2) : 0;
+      b.style.transform = `translateX(${((1 - p) * 120).toFixed(1)}px)`;
+    });
+    sticker(x2, popScale(t, C.x2), -8);
+    halves.forEach((h, i) => { h.style.transform = `translateX(${(i ? 1 : -1) * easeOut(prog(t, C.split + i * 0.18, 0.3)) * 10}px) scaleY(${back(prog(t, C.split + i * 0.18, 0.3)).toFixed(4)})`; });
+    sticker(qchip, popScale(t, C.quality), -3);
+    battFill.style.width = lerp(20, 100, easeInOut(prog(t, C.charge, C.chargeEnd - C.charge))) + '%';
+  }
+}
+
+// ---------------- day pages ----------------
+const PG = PAGES.map((p) => {
+  const root = el(document.getElementById('pages'), 'abs page');
+  const chip = el(root, 'abs dchip', `<span>${p.chip}</span>`);
+  if (p.rest) {
+    return { p, root, chip, rest: { bed: card(root, 'bed', 540, 640, 300), big: el(root, 'abs restbig goldtxt', 'REST'), ar: el(root, 'abs restar', p.ar) } };
+  }
+  const title = el(root, 'abs ptitle goldtxt', p.en);
+  const sub = el(root, 'abs psub', p.ar);
+  const items = [];
+  let y = 480, k = 0;
+  p.groups.forEach(([label, list]) => {
+    items.push({ d: el(root, 'abs glabel', label, { top: y + 'px' }), k, label: true });
+    y += 58;
+    list.forEach((x) => {
+      const imgs = x.frames.map((f) => `<img src="${f}">`).join('');
+      const d = el(root, 'abs xrow', `<div class="ph">${imgs}</div><div class="no">${String(k + 1).padStart(2, '0')}</div><div class="nm">${x.name}</div>`, { top: y + 'px' });
+      items.push({ d, k, imgs: [...d.querySelectorAll('img')] });
+      y += 138; k++;
+    });
+  });
+  return { p, root, chip, title, sub, items };
+});
+
+function drawPages(t) {
+  PG.forEach(({ p, root, chip, title, sub, items, rest }) => {
+    const on = t >= p.from - 0.02 && t < p.to + 0.25;
+    root.style.display = on ? 'block' : 'none';
+    if (!on) return;
+    const inP = easeOut(prog(t, p.from, 0.35));
+    root.style.opacity = (Math.min(inP * 1.5, 1) * (1 - prog(t, p.to - 0.05, 0.25))).toFixed(3);
+    root.style.transform = `translateX(${((1 - inP) * 160).toFixed(1)}px)`;
+    sticker(chip, popScale(t, p.from + 0.1));
+    if (rest) {
+      sticker(rest.bed, popScale(t, p.from + 0.15), -5, `translateY(${(Math.sin(t * 2.5) * 10).toFixed(1)}px)`);
+      sticker(rest.big, popScale(t, p.from + 0.35));
+      sticker(rest.ar, popScale(t, p.from + 0.55));
+      return;
+    }
+    sticker(title, popScale(t, p.from + 0.25));
+    sticker(sub, popScale(t, p.from + 0.45));
+    items.forEach((it) => {
+      const at = p.from + 1.2 + it.k * ROW - (it.label ? 0.18 : 0);
+      const a = prog(t, at, 0.35);
+      it.d.style.opacity = a > 0 ? Math.min(1, a * 2).toFixed(3) : 0;
+      it.d.style.transform = `translateX(${((1 - easeOut(a)) * 90).toFixed(1)}px)`;
+      if (it.imgs && it.imgs.length > 1) {
+        const ph = ((t - at) % 1.6 + 1.6) % 1.6;
+        const o = ph < 0.6 ? 0 : ph < 0.8 ? (ph - 0.6) / 0.2 : ph < 1.4 ? 1 : 1 - (ph - 1.4) / 0.2;
+        it.imgs[1].style.opacity = o.toFixed(3);
+      }
+    });
+  });
+}
+
+function setTime(t) {
+  updateCaptions(t);
+  document.getElementById('caption').style.display = t < C.introEnd - 0.1 ? 'flex' : 'none';
+  drawIntro(t);
+  drawPages(t);
+}
+UI.boot(setTime, DURATION);
+</script>
+</body>
+</html>
