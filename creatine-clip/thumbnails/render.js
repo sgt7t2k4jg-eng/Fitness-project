@@ -1,5 +1,5 @@
-// Renders a thumbnail page to Exports/<name>-thumbnail.jpg (1080x1920) and a 3:4 grid-crop preview.
-// Usage: node creatine-clip/thumbnails/render.js carbs
+// Renders a page in this folder to Exports/<output name> (default <name>-thumbnail.jpg), 1080x1920.
+// Usage: node creatine-clip/thumbnails/render.js carbs   |   node .../render.js week-plan week-plan.jpg
 const path = require('path');
 const { chromium } = require('playwright');
 
@@ -12,7 +12,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   await page.goto('file://' + path.join(__dirname, name + '.html'));
   await page.evaluate(() => window.ready);
-  const out = path.join(ROOT, 'Exports', `${name}-thumbnail.jpg`);
+  const out = path.join(ROOT, 'Exports', process.argv[3] || `${name}-thumbnail.jpg`);
   await page.screenshot({ path: out, type: 'jpeg', quality: 93 });
   await browser.close();
   console.log('wrote ' + out);
