@@ -82,6 +82,29 @@
   .fnote { left: 0; width: 1080px; top: 1095px; text-align: center; font-size: 34px; line-height: 1.5; color: rgba(255,255,255,.55); font-weight: 700; }
   .ocard.tip { top: 330px; }
   .ocard.tip p { font-size: 54px; }
+  /* protein post — 'pro' look */
+  #stage.pro { background: radial-gradient(900px 700px at 50% 34%, rgba(243,193,75,.13), transparent 65%), linear-gradient(180deg, #0c0c0d 0%, #040404 100%); }
+  .pt1 { left: 0; width: 1080px; top: 400px; text-align: center; font-size: 104px; }
+  .pt2 { left: 0; width: 1080px; top: 540px; text-align: center; font-size: 230px; line-height: 1.2; filter: drop-shadow(0 12px 0 rgba(0,0,0,.6)); }
+  .ptline { left: 390px; top: 880px; width: 300px; height: 10px; border-radius: 5px; background: var(--gold); }
+  .bignum { left: 0; width: 1080px; top: 70px; text-align: center; font-size: 560px; line-height: 1; direction: ltr;
+            color: transparent; -webkit-text-stroke: 4px rgba(243,193,75,.16); }
+  .glow { left: 240px; top: 150px; width: 600px; height: 560px; border-radius: 50%; background: radial-gradient(closest-side, rgba(243,193,75,.38), rgba(243,193,75,0)); }
+  .fimg { left: 330px; top: 200px; width: 420px; height: 420px; display: flex; align-items: center; justify-content: center; }
+  .fimg img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 26px 26px rgba(0,0,0,.6)); }
+  .fshadow { left: 380px; top: 640px; width: 320px; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); }
+  .fname2 { left: 0; width: 1080px; top: 690px; text-align: center; font-size: 112px; line-height: 1.2; }
+  .fserv2 { left: 0; width: 1080px; top: 830px; text-align: center; font-size: 40px; font-weight: 700; color: rgba(255,255,255,.8); }
+  .stats2 { left: 70px; width: 940px; top: 920px; display: flex; gap: 22px; }
+  .st2 { flex: 1; height: 230px; border-radius: 34px; background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.14);
+         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .st2 small { font-size: 38px; color: rgba(255,255,255,.7); }
+  .st2 b { font-size: 74px; line-height: 1.1; direction: ltr; white-space: nowrap; }
+  .st2 b i { font-style: normal; font-size: 30px; margin-left: 6px; color: rgba(255,255,255,.6); }
+  .st2.main { background: linear-gradient(180deg, #ffe08a, #e3a92f); border-color: #ffe08a; color: var(--ink); box-shadow: 0 0 40px rgba(243,193,75,.35); }
+  .st2.main small { color: rgba(11,13,16,.75); }
+  .st2.main b { font-size: 90px; }
+  .fnote2 { left: 0; width: 1080px; top: 1185px; text-align: center; font-size: 32px; line-height: 1.5; color: rgba(255,255,255,.5); font-weight: 700; }
   /* session slides (same look as the video day pages) */
   .dchip { left: 0; width: 1080px; top: 116px; display: flex; justify-content: center; }
   .dchip span { height: 66px; padding: 0 34px 6px; border-radius: 33px; border: 4px solid var(--gold); color: var(--gold); font-size: 40px; line-height: 56px; }
@@ -183,25 +206,28 @@ const CFG = {
 }[SET];
 // ---- protein post: values are approximate (USDA FoodData Central) ----
 const FOODS = [
-  { name: 'صدر الدجاج', icon: 'chicken', serving: '100g مطيب', p: '31g', kcal: '165', fat: '3.6g' },
-  { name: 'البيض', icon: 'egg', serving: 'بيضة وحدة كبيرة (50g تقريبا)', p: '6.3g', kcal: '72', fat: '4.8g' },
-  { name: 'الطون', icon: 'can', serving: '100g مصفي (طون فالما)', p: '26g', kcal: '116', fat: '0.8g', note: 'إلا كان فالزيت: 198 سعرة و 8g دهون' },
-  { name: 'اللحم', icon: 'meat', serving: '100g لحم بقري قليل الدهون، مطيب', p: '26g', kcal: '217', fat: '12g' },
-  { name: 'السردين', icon: 'fish', serving: '100g (حك فالزيت، مصفي)', p: '25g', kcal: '208', fat: '11g' },
+  { name: 'صدر الدجاج', img: 'chicken', serving: '100g مطيب', p: '31g', kcal: '165', fat: '3.6g' },
+  { name: 'البيض', img: 'egg', serving: 'بيضة وحدة كبيرة (50g تقريبا)', p: '6.3g', kcal: '72', fat: '4.8g' },
+  { name: 'الطون', img: 'tuna', serving: '100g مصفي (طون فالما)', p: '26g', kcal: '116', fat: '0.8g', note: 'إلا كان فالزيت: 198 سعرة و 8g دهون' },
+  { name: 'اللحم', img: 'meat', serving: '100g لحم بقري قليل الدهون، مطيب', p: '26g', kcal: '217', fat: '12g' },
+  { name: 'السردين', img: 'sardines', serving: '100g (حك فالزيت، مصفي)', p: '25g', kcal: '208', fat: '11g' },
 ];
 function renderProtein(slide) {
+  document.getElementById('stage').classList.add('pro');
   if (slide === 1) {
-    el('hook1 ph1', 'أفضل 5 مصادر');
-    el('hook2 ph2', '<span class="b goldtxt">البروتين</span>');
-    el('frame pframe', FOODS.map((f, i) => `<div class="prow"><div class="pn">${i + 1}</div><div class="pic"><img src="../icons/${f.icon}.svg"></div><div class="pnm">${f.name}</div></div>`).join(''));
+    el('pt1', 'أفضل 5 مصادر');
+    el('pt2 goldtxt', 'البروتين');
+    el('ptline', '');
   } else if (slide <= FOODS.length + 1) {
     const f = FOODS[slide - 2];
-    el('dchip', `<span>رقم ${slide - 1}</span>`);
-    el('ptitle goldtxt fname', f.name);
-    el('psub fserv', f.serving);
-    el('fcard', `<img src="../icons/${f.icon}.svg">`);
-    el('stats', `<div class="st main"><small>بروتين</small><b>${f.p}</b></div><div class="st"><small>سعرات</small><b>${f.kcal}<i>kcal</i></b></div><div class="st"><small>دهون</small><b>${f.fat}</b></div>`);
-    el('fnote', (f.note ? f.note + '<br>' : '') + 'القيم تقريبية');
+    el('bignum', String(slide - 1).padStart(2, '0'));
+    el('glow', '');
+    el('fimg', `<img src="../food3d/${f.img}.png">`);
+    el('fshadow', '');
+    el('fname2 goldtxt', f.name);
+    el('fserv2', f.serving);
+    el('stats2', `<div class="st2 main"><small>بروتين</small><b>${f.p}</b></div><div class="st2"><small>سعرات</small><b>${f.kcal}<i>kcal</i></b></div><div class="st2"><small>دهون</small><b>${f.fat}</b></div>`);
+    el('fnote2', (f.note ? f.note + '<br>' : '') + 'القيم تقريبية');
   } else {
     el('otitle goldtxt high', 'نصيحة');
     el('ocard wrap tip', `<p><span class="g">البروتين</span> من بين أهم العناصر الغذائية لبناء العضلات.</p><p>ختار داك الشي اللي عندك.</p>`);

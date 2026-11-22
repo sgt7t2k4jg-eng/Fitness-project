@@ -1,0 +1,2 @@
+chicken/egg/meat: Microsoft Fluent Emoji 3D (MIT, https://github.com/microsoft/fluentui-emoji).
+tuna.png and sardines.png are edited from the Fluent "Canned food" and "Fish" images (MIT).
