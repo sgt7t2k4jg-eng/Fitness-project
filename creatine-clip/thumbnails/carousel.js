@@ -1,11 +1,11 @@
 // Renders every slide of carousel.html to Exports/<set dir>/NN.jpg (1080x1350, Instagram 4:5).
-// Usage: node creatine-clip/thumbnails/carousel.js [bro|ul]
+// Usage: node creatine-clip/thumbnails/carousel.js [bro|ul|protein]
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 
 const SET = process.argv[2] || 'bro';
-const OUT = path.resolve(__dirname, '..', '..', 'Exports', { bro: 'bro-split-carousel', ul: 'upper-lower-carousel' }[SET]);
+const OUT = path.resolve(__dirname, '..', '..', 'Exports', { bro: 'bro-split-carousel', ul: 'upper-lower-carousel', protein: 'protein-carousel' }[SET]);
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
