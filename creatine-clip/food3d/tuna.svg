@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- flat round tuna can, 3/4 view -->
+  <defs>
+    <linearGradient id="body" x1="0" x2="1">
+      <stop offset="0" stop-color="#173f86"/><stop offset=".35" stop-color="#3b82f0"/><stop offset=".55" stop-color="#5a9cff"/><stop offset="1" stop-color="#143672"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" x2="1">
+      <stop offset="0" stop-color="#8d96a3"/><stop offset=".4" stop-color="#eef2f7"/><stop offset=".6" stop-color="#ffffff"/><stop offset="1" stop-color="#7d8794"/>
+    </linearGradient>
+    <radialGradient id="lid" cx=".42" cy=".38" r=".75">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d7dde5"/><stop offset="1" stop-color="#9aa4b1"/>
+    </radialGradient>
+    <linearGradient id="fish" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e6ff"/>
+    </linearGradient>
+  </defs>
+  <!-- bottom rim -->
+  <path d="M22 168 v10 a106 40 0 0 0 212 0 v-10 z" fill="url(#rim)"/>
+  <!-- body -->
+  <path d="M26 104 V170 A102 38 0 0 0 230 170 V104 Z" fill="url(#body)"/>
+  <!-- label band highlight -->
+  <path d="M26 120 A102 38 0 0 0 230 120 V126 A102 38 0 0 1 26 126 Z" fill="#ffffff" opacity=".18"/>
+  <!-- fish on the label -->
+  <g transform="translate(128 160)">
+    <ellipse cx="-6" cy="0" rx="40" ry="17" fill="url(#fish)"/>
+    <path d="M30 0 L56 -16 L50 0 L56 16 Z" fill="url(#fish)"/>
+    <path d="M-12 -15 Q2 -30 18 -14 Z" fill="#d6e6ff"/>
+    <circle cx="-32" cy="-4" r="3.6" fill="#173f86"/>
+    <path d="M-20 -10 Q-14 0 -20 10" stroke="#9fbde8" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- top rim + lid -->
+  <ellipse cx="128" cy="104" rx="106" ry="40" fill="url(#rim)"/>
+  <ellipse cx="128" cy="104" rx="96" ry="35" fill="url(#lid)"/>
+  <ellipse cx="128" cy="104" rx="80" ry="28" fill="none" stroke="#a9b3bf" stroke-width="3"/>
+  <ellipse cx="128" cy="104" rx="64" ry="22" fill="none" stroke="#c3cbd5" stroke-width="2"/>
+  <!-- ring pull -->
+  <ellipse cx="128" cy="96" rx="22" ry="9" fill="none" stroke="#8f99a6" stroke-width="6"/>
+  <rect x="120" y="100" width="16" height="16" rx="5" fill="#a7b1bd"/>
+</svg>

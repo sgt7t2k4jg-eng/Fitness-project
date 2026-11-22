@@ -38,10 +38,8 @@
   .note { left: 70px; top: 1252px; font-size: 30px; color: rgba(255,255,255,.35); font-weight: 700; }
 
   /* cover */
-  .cover .t1 { font-size: 110px; margin-top: 230px; }
-  .cover .t2 { font-size: 240px; line-height: 1.1; color: var(--or); }
-  .cover .icons { display: flex; gap: 26px; margin-top: 60px; direction: rtl; }
-  .cover .icons img { width: 120px; height: 120px; object-fit: contain; }
+  .cover .t1 { font-size: 120px; margin-top: 300px; }
+  .cover .t2 { font-size: 260px; line-height: 1.1; color: var(--or); }
 
   /* last slide */
   .tip .t { font-size: 120px; color: var(--or); margin-top: 90px; }
@@ -61,13 +59,14 @@
   <div id="content"></div>
 </div>
 <script>
-// Values are approximate (USDA FoodData Central). Images: Fluent Emoji 3D (MIT); tuna can + sardines edited from it.
+// Values are approximate (USDA FoodData Central). Images: Fluent Emoji 3D (MIT); sardines edited from it; tuna.svg drawn for this post.
 const FOODS = [
-  { name: 'صدر الدجاج', img: 'chicken', serving: '100g مطيب', p: '31g', kcal: 165, fat: '3.6g', tag: 'قليل الدهون وغني بالبروتين' },
-  { name: 'البيض', img: 'egg', serving: 'بيضة وحدة', p: '6g', kcal: 72, fat: '4.8g', tag: 'بروتين كامل وساهل فالطياب' },
-  { name: 'الطون', img: 'tuna', serving: '100g مصفي (طون فالما)', p: '26g', kcal: 116, fat: '0.8g', tag: 'إلا كان فالزيت: 198 سعرة و 8g دهون' },
-  { name: 'اللحم', img: 'meat', serving: '100g لحم بقري قليل الدهون', p: '26g', kcal: 217, fat: '12g', tag: 'غني بالبروتين والحديد' },
-  { name: 'السردين', img: 'sardines', serving: '100g (حك فالزيت، مصفي)', p: '25g', kcal: 208, fat: '11g', tag: 'غني بالأوميغا 3' },
+  { name: 'صدر الدجاج', img: 'chicken.png', serving: '100g طايب', p: '31g', kcal: 165, fat: '3.6g', tag: 'قليل الدهون وغني بالبروتين' },
+  { name: 'البيض', img: 'egg.png', serving: 'بيضة وحدة', p: '6g', kcal: 72, fat: '4.8g', tag: 'بروتين كامل وساهل فالطياب' },
+  // tuna: one round can, ~120g drained, in oil
+  { name: 'الطون', img: 'tuna.svg', serving: 'علبة طون', p: '35g', kcal: 238, fat: '10g', tag: 'ساهل وجاهز فأي وقت' },
+  { name: 'اللحم', img: 'meat.png', serving: '100g لحم بقري قليل الدهون', p: '26g', kcal: 217, fat: '12g', tag: 'غني بالبروتين والحديد' },
+  { name: 'السردين', img: 'sardines.png', serving: '100g', p: '25g', kcal: 208, fat: '11g', tag: 'غني بالأوميغا 3' },
 ];
 const N = FOODS.length + 2;
 const slide = +(new URLSearchParams(location.search).get('slide') || 1);
@@ -76,12 +75,10 @@ const add = (cls, html) => { const d = document.createElement('div'); d.classNam
 document.querySelector('.count').textContent = `${slide}/${N}`;
 
 if (slide === 1) {
-  add('card cover', `<div class="t1">أفضل 5 مصادر</div><div class="t2">البروتين</div>
-    <div class="icons">${FOODS.map((f) => `<img src="../food3d/${f.img}.png">`).join('')}</div>`);
-  add('swipe', 'سوايبي ←');
+  add('card cover', `<div class="t1">أفضل 5 مصادر</div><div class="t2">البروتين</div>`);
 } else if (slide <= FOODS.length + 1) {
   const f = FOODS[slide - 2];
-  add('card', `<div class="img"><img src="../food3d/${f.img}.png"></div><div class="nm">${f.name}</div><div class="sv">${f.serving}</div>
+  add('card', `<div class="img"><img src="../food3d/${f.img}"></div><div class="nm">${f.name}</div><div class="sv">${f.serving}</div>
     <div class="big">${f.p}</div><div class="lb">بروتين</div>
     <div class="pill"><span class="l">${f.kcal} kcal</span> · ${f.fat} دهون</div><div class="tag">${f.tag}</div>`);
   add('note', 'القيم تقريبية');
