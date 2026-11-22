@@ -1,11 +1,13 @@
-// Renders every slide of carousel.html (protein: protein.html) to Exports/<set dir>/NN.jpg (1080x1350, Instagram 4:5).
-// Usage: node creatine-clip/thumbnails/carousel.js [bro|ul|protein]
+// Renders every slide of a carousel post to Exports/<dir>/NN.jpg (1080x1350, Instagram 4:5).
+// bro / ul -> carousel.html (program posts). Any other name -> card-post.html with posts/<name>.js.
+// Usage: node creatine-clip/thumbnails/carousel.js [bro|ul|<post name>]   e.g. protein
 const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 
 const SET = process.argv[2] || 'bro';
-const OUT = path.resolve(__dirname, '..', '..', 'Exports', { bro: 'bro-split-carousel', ul: 'upper-lower-carousel', protein: 'protein-carousel' }[SET]);
+const PROGRAM = { bro: 'bro-split-carousel', ul: 'upper-lower-carousel' };
+const OUT = path.resolve(__dirname, '..', '..', 'Exports', PROGRAM[SET] || `${SET}-carousel`);
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -13,8 +15,8 @@ const OUT = path.resolve(__dirname, '..', '..', 'Exports', { bro: 'bro-split-car
   const page = await browser.newPage({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
   let n = 1;
   for (let s = 1; s <= n; s++) {
-    const html = SET === 'protein' ? 'protein.html' : 'carousel.html';
-    await page.goto(`file://${path.join(__dirname, html)}?set=${SET}&slide=${s}`);
+    const url = PROGRAM[SET] ? `carousel.html?set=${SET}&slide=${s}` : `card-post.html?post=${SET}&slide=${s}`;
+    await page.goto(`file://${path.join(__dirname, url)}`);
     await page.evaluate(() => window.ready);
     n = await page.evaluate(() => window.N);
     const file = path.join(OUT, `${String(s).padStart(2, '0')}.jpg`);

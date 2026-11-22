@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>Top 5 protein sources</title>
+<title>Card post</title>
 <style>
   @font-face { font-family: Cairo; font-weight: 700; src: url(../fonts/cairo-arabic-700-normal.woff2) format('woff2'); }
   @font-face { font-family: Cairo; font-weight: 900; src: url(../fonts/cairo-arabic-900-normal.woff2) format('woff2'); }
@@ -59,42 +59,41 @@
   <div id="content"></div>
 </div>
 <script>
-// Values are approximate (USDA FoodData Central). Images: Fluent Emoji 3D (MIT); sardines edited from it; tuna.svg drawn for this post.
-const FOODS = [
-  { name: 'صدر الدجاج', img: 'chicken.png', serving: '100g طايب', p: '31g', kcal: 165, fat: '3.6g', tag: 'قليل الدهون وغني بالبروتين' },
-  { name: 'البيض', img: 'egg.png', serving: 'بيضة وحدة', p: '6g', kcal: 72, fat: '4.8g', tag: 'بروتين كامل وساهل فالطياب' },
-  // tuna: one round can, ~120g drained, in oil
-  { name: 'الطون', img: 'tuna.svg', serving: 'علبة طون', p: '35g', kcal: 238, fat: '10g', tag: 'ساهل وجاهز فأي وقت' },
-  { name: 'اللحم', img: 'meat.png', serving: '100g لحم بقري قليل الدهون', p: '26g', kcal: 217, fat: '12g', tag: 'غني بالبروتين والحديد' },
-  { name: 'السردين', img: 'sardines.png', serving: '100g', p: '25g', kcal: 208, fat: '11g', tag: 'غني بالأوميغا 3' },
-];
-const N = FOODS.length + 2;
+  // Content comes from posts/<name>.js (?post=<name>); this page is only the design.
+  const POST_NAME = new URLSearchParams(location.search).get('post') || 'protein';
+  document.write(`<script src="posts/${POST_NAME}.js"><\/script>`);
+</script>
+<script>
+const ITEMS = POST.items;
+const N = ITEMS.length + 2;
 const slide = +(new URLSearchParams(location.search).get('slide') || 1);
 const root = document.getElementById('content');
 const add = (cls, html) => { const d = document.createElement('div'); d.className = 'abs ' + cls; d.innerHTML = html; root.appendChild(d); return d; };
 document.querySelector('.count').textContent = `${slide}/${N}`;
 
 if (slide === 1) {
-  add('card cover', `<div class="t1">أفضل 5 مصادر</div><div class="t2">البروتين</div>`);
-} else if (slide <= FOODS.length + 1) {
-  const f = FOODS[slide - 2];
-  add('card', `<div class="img"><img src="../food3d/${f.img}"></div><div class="nm">${f.name}</div><div class="sv">${f.serving}</div>
-    <div class="big">${f.p}</div><div class="lb">بروتين</div>
-    <div class="pill"><span class="l">${f.kcal} kcal</span> · ${f.fat} دهون</div><div class="tag">${f.tag}</div>`);
-  add('note', 'القيم تقريبية');
+  // cover: title only
+  add('card cover', `<div class="t1">${POST.cover[0]}</div><div class="t2">${POST.cover[1]}</div>`);
+} else if (slide <= ITEMS.length + 1) {
+  // one item: image, name, small line, big number + label, grey pill, short line
+  const f = ITEMS[slide - 2];
+  add('card', `<div class="img"><img src="${f.img}"></div><div class="nm">${f.name}</div><div class="sv">${f.serving}</div>
+    <div class="big">${f.big}</div><div class="lb">${f.label}</div>
+    <div class="pill">${f.pill}</div><div class="tag">${f.tag}</div>`);
+  if (POST.note) add('note', POST.note);
   add('swipe', 'سوايبي ←');
 } else {
+  // last slide: tip + call to action
   const I = {
     like: '<svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11.2A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.8C20 15.7 12 21 12 21z" fill="#e0245e"/></svg>',
     follow: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="8" r="4"/><path d="M3 20c0-4 3-6 7-6s7 2 7 6M19 8v6M16 11h6"/></svg>',
     comment: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>',
     save: '<svg width="48" height="48" viewBox="0 0 24 24" fill="#f0873a" stroke="#f0873a" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>',
   };
-  add('card tip', `<div class="t">نصيحة</div>
-    <p><b>البروتين</b> من بين أهم العناصر الغذائية لبناء العضلات.</p>
-    <p>ختار داك الشي اللي عندك.</p>
-    <div class="cta"><div class="h">سيف البوسط باش ترجع ليه</div>
-      <div class="i"><div>${I.like}لايك</div><div>${I.follow}فلو</div><div>${I.comment}كومنت</div><div>${I.save}سيف</div></div></div>`);
+  const W = { like: 'لايك', follow: 'فلو', comment: 'كومنت', save: 'سيف' };
+  add('card tip', `<div class="t">${POST.tip.title}</div>${POST.tip.paras.map((p) => `<p>${p}</p>`).join('')}
+    <div class="cta"><div class="h">${POST.tip.cta}</div>
+      <div class="i">${(POST.tip.icons || ['like', 'follow', 'comment', 'save']).map((k) => `<div>${I[k]}${W[k]}</div>`).join('')}</div></div>`);
 }
 window.N = N;
 window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.decode().catch(() => {}))]);
