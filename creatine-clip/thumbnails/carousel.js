@@ -1,4 +1,4 @@
-// Renders every slide of carousel.html to Exports/<set dir>/NN.jpg (1080x1350, Instagram 4:5).
+// Renders every slide of carousel.html (protein: protein.html) to Exports/<set dir>/NN.jpg (1080x1350, Instagram 4:5).
 // Usage: node creatine-clip/thumbnails/carousel.js [bro|ul|protein]
 const fs = require('fs');
 const path = require('path');
@@ -13,7 +13,8 @@ const OUT = path.resolve(__dirname, '..', '..', 'Exports', { bro: 'bro-split-car
   const page = await browser.newPage({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
   let n = 1;
   for (let s = 1; s <= n; s++) {
-    await page.goto(`file://${path.join(__dirname, 'carousel.html')}?set=${SET}&slide=${s}`);
+    const html = SET === 'protein' ? 'protein.html' : 'carousel.html';
+    await page.goto(`file://${path.join(__dirname, html)}?set=${SET}&slide=${s}`);
     await page.evaluate(() => window.ready);
     n = await page.evaluate(() => window.N);
     const file = path.join(OUT, `${String(s).padStart(2, '0')}.jpg`);
