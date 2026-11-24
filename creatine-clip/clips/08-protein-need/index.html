@@ -26,6 +26,25 @@
     background: radial-gradient(520px 640px at 50% 34%, rgba(255,214,150,.20), transparent 70%), linear-gradient(180deg, rgba(10,10,12,.35), rgba(10,10,12,.2) 40%, rgba(10,10,12,.92) 62%); }
   .ruler-badge { font-size: 64px; height: 116px; padding: 0 40px 8px; line-height: 108px; }
 
+  .vignette { left: 0; top: 0; width: 1080px; height: 1920px; background: radial-gradient(900px 1200px at 50% 38%, transparent 45%, rgba(0,0,0,.75) 100%); }
+  .grain { left: 0; top: 0; width: 1080px; height: 1920px; opacity: .09; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .wk-lbl { left: 0; width: 1080px; top: 150px; text-align: center; font-size: 46px; color: rgba(255,255,255,.6); font-weight: 700; }
+  .wk-num { left: 0; width: 1080px; top: 196px; text-align: center; font-size: 190px; line-height: 1; direction: ltr; letter-spacing: 4px; }
+  .wk-bar { left: 340px; top: 410px; width: 400px; height: 12px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; }
+  .wk-bar i { position: absolute; top: 0; bottom: 0; right: 0; width: 0; background: var(--or); border-radius: 6px; }
+  .arm-wrap { left: 300px; top: 470px; width: 480px; height: 420px; }
+  .arm-wrap .arm { position: absolute; left: 40px; top: 0; width: 400px; height: 400px; object-fit: contain; }
+  .arm-wrap .tape { position: absolute; left: 150px; top: 120px; width: 300px; height: 150px; transform: rotate(-12deg); }
+  .readout { left: 130px; top: 900px; width: 820px; height: 250px; border-radius: 40px; background: rgba(30,30,36,.82);
+             border: 2px solid rgba(255,255,255,.1); backdrop-filter: blur(10px); }
+  .readout .rl { position: absolute; right: 40px; top: 26px; font-size: 40px; color: rgba(255,255,255,.6); font-weight: 700; }
+  .readout .rv { position: absolute; left: 40px; top: 10px; font-size: 54px; direction: ltr; color: rgba(255,255,255,.75); }
+  .readout .rv span { font-size: 84px; color: #fff; }
+  .readout .spark { position: absolute; left: 110px; top: 118px; width: 600px; height: 120px; }
+  .stamp { left: 650px; top: 745px; width: 360px; height: 150px; border-radius: 30px; background: #e5484d; color: #fff; font-size: 92px;
+           display: flex; align-items: center; justify-content: center; direction: ltr; padding-bottom: 10px;
+           box-shadow: 0 0 0 8px rgba(229,72,77,.25), 0 20px 40px rgba(0,0,0,.6); }
   /* meter */
   .meter { left: 110px; width: 860px; height: 110px; border-radius: 55px; background: var(--pill); overflow: hidden; }
   .meter i { position: absolute; top: 0; bottom: 0; right: 0; width: 0; border-radius: 55px; background: linear-gradient(90deg, #e5484d, #f0873a); }
@@ -84,23 +103,60 @@ const GYM_SVG = (() => {
     <rect x="360" y="140" width="360" height="16" rx="8" fill="#3c3d46"/><polygon points="370,156 710,156 980,1000 100,1000" fill="url(#lamp)"/>
   </svg>`;
 })();
+const TAPE = `<svg class="tape" viewBox="0 0 300 150"><defs><linearGradient id="tp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#e0a51e"/></linearGradient></defs>
+  <path d="M8 40 Q150 120 292 40 L292 74 Q150 154 8 74 Z" fill="url(#tp)" stroke="#a87410" stroke-width="2"/>
+  ${Array.from({ length: 23 }, (_, i) => { const x = 18 + i * 12, tt = (x - 8) / 284, y = 40 + 4 * (1 - tt) * tt * 80 * 0.5 + 2; return `<line x1="${x}" y1="${(y).toFixed(1)}" x2="${x}" y2="${(y + (i % 5 ? 10 : 18)).toFixed(1)}" stroke="#5a3b00" stroke-width="2"/>`; }).join('')}
+  <text x="150" y="110" text-anchor="middle" font-family="Cairo" font-weight="900" font-size="26" fill="#5a3b00">35</text></svg>`;
 SC.add(0, C.sc2 - 0.22, (r) => {
   const gym = el(r, 'abs', GYM_SVG); gym.id = 'gym';
   const shade = el(r, 'abs'); shade.id = 'gymShade';
-  const face = img(r, 'pensive.png', 400, 640, 380);
-  const arm = img(r, 'biceps.png', 760, 650, 300);
-  const ruler = img(r, 'ruler.png', 830, 420, 210);
-  const zero = box(r, 'chip red ruler-badge lat', '+0 cm', 780, 900, 290, 116, { boxShadow: '0 14px 0 rgba(0,0,0,.45)' });
+  const vig = el(r, 'abs vignette');
+  // week counter
+  const wkLbl = el(r, 'abs wk-lbl', 'الأسبوع');
+  const wkNum = el(r, 'abs wk-num', '01');
+  const wkBar = el(r, 'abs wk-bar', '<i></i>');
+  // arm + measuring tape
+  const armWrap = el(r, 'abs arm-wrap', `<img class="arm" src="../../food3d/biceps.png">${TAPE}`);
+  const armImg = armWrap.querySelector('.arm');
+  // readout card: frozen measurement + flat graph
+  const read = el(r, 'abs readout', `<div class="rl">قياس الذراع</div><div class="rv"><span>35.0</span> cm</div>
+    <svg class="spark" viewBox="0 0 600 120"><line x1="0" y1="96" x2="600" y2="96" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+      <path class="ln" d="M10 60 L600 60" stroke="#e5484d" stroke-width="7" stroke-linecap="round" fill="none"/>
+      ${Array.from({ length: 12 }, (_, i) => `<circle class="pt" cx="${10 + i * 53.6}" cy="60" r="9" fill="#e5484d"/>`).join('')}</svg>`);
+  const line = read.querySelector('.ln'), pts = [...read.querySelectorAll('.pt')];
+  line.style.strokeDasharray = '600'; 
+  const stamp = el(r, 'abs stamp', '+0 cm');
+  const grain = el(r, 'abs grain');
   return (t) => {
-    const fIn = easeOut(prog(t, 0, 0.5));
-    r.querySelector('#gym').style.transform = `scale(${lerp(1.12, 1.0, easeOut(prog(t, 0, 3))).toFixed(4)})`;
-    sticker(face, popScale(t, 0.05) * (1 - 0.03 * Math.sin(t * 2)), lerp(0, -6, prog(t, C.sad, 0.5)), `translateY(${(lerp(0, 18, easeInOut(prog(t, C.sad, 0.6)))).toFixed(1)}px)`);
-    face.style.opacity = fIn;
-    // two hopeful flexes, then nothing happens
-    const flex = C.flex.reduce((a, at) => a + Math.sin(prog(t, at, 0.4) * Math.PI) * 0.1, 0);
-    sticker(arm, popScale(t, 0.2) * (1 + flex), -8 + flex * 40);
-    sticker(ruler, popScale(t, C.ruler), 38);
-    sticker(zero, popScale(t, C.zero), -4, `translateX(${(Math.sin(prog(t, C.zero, 0.5) * Math.PI * 4) * 10 * (1 - prog(t, C.zero, 0.5))).toFixed(1)}px)`);
+    // slow push-in, small shake on the stamp
+    const shake = t > C.stamp && t < C.stamp + 0.35 ? (1 - prog(t, C.stamp, 0.35)) * 14 : 0;
+    r.style.transform = `translate(${(Math.sin(t * 90) * shake).toFixed(1)}px, ${(Math.cos(t * 77) * shake).toFixed(1)}px)`;
+    gym.style.transform = `scale(${lerp(1.15, 1.03, easeOut(prog(t, 0, 3.5))).toFixed(4)})`;
+    // counter 01 -> 12
+    const wk = C.weeks.filter((w) => t >= w).length || 1;
+    wkNum.textContent = String(wk).padStart(2, '0');
+    const inP = easeOut(prog(t, 0.05, 0.4));
+    [wkLbl, wkNum, wkBar].forEach((d) => { d.style.opacity = inP; d.style.transform = `translateY(${((1 - inP) * 40).toFixed(1)}px)`; });
+    wkNum.style.transform += ` scale(${(1 + 0.08 * Math.sin(prog(t, C.weeks[wk - 1], 0.1) * Math.PI)).toFixed(3)})`;
+    wkBar.firstChild.style.width = (wk / 12) * 100 + '%';
+    // arm: lifts in, then goes grey when the hook lands
+    const aIn = easeOut(prog(t, 0.1, 0.6));
+    const sadP = easeInOut(prog(t, C.sad, 0.6));
+    armWrap.style.opacity = aIn;
+    armWrap.style.transform = `translateY(${((1 - aIn) * 80 + sadP * 14).toFixed(1)}px) scale(${lerp(0.9, 1, aIn).toFixed(4)})`;
+    armImg.style.filter = `grayscale(${(sadP * 0.75).toFixed(3)}) brightness(${(1 - sadP * 0.25).toFixed(3)}) drop-shadow(0 30px 30px rgba(0,0,0,.6))`;
+    // readout: graph draws flat across the 12 weeks
+    const rIn = easeOut(prog(t, 0.2, 0.45));
+    read.style.opacity = rIn; read.style.transform = `translateY(${((1 - rIn) * 60).toFixed(1)}px)`;
+    const g = prog(t, C.weeks[0], C.weeks[11] - C.weeks[0] + 0.1);
+    line.style.strokeDashoffset = ((1 - g) * 600).toFixed(1);
+    pts.forEach((p, i) => p.setAttribute('r', t >= C.weeks[i] ? (9 * Math.min(1, back(prog(t, C.weeks[i], 0.2)))).toFixed(2) : 0));
+    // stamp slams in
+    const sp = prog(t, C.stamp, 0.22);
+    stamp.style.opacity = t >= C.stamp ? 1 : 0;
+    stamp.style.transform = `rotate(-8deg) scale(${lerp(2.4, 1, easeOut(sp)).toFixed(4)})`;
+    // film grain (moves every frame)
+    grain.style.backgroundPosition = `${Math.floor((t * 30 * 137) % 300)}px ${Math.floor((t * 30 * 251) % 300)}px`;
   };
 });
 

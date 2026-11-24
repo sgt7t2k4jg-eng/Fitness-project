@@ -40,7 +40,7 @@
   const E = (key, wi = -1) => word(key, wi).end;
 
   const c = {
-    flex: [0.35, 1.05], ruler: 0.75, zero: 1.25, sad: S('a', 1),
+    weeks: Array.from({ length: 12 }, (_, i) => +(0.3 + i * 0.105).toFixed(3)), stamp: 1.68, sad: S('a', 1),
     sc2: S('b'), plate: S('b', 0), q: S('b', 3),
     sc3: S('c'), bar: S('c', 1), low: S('c2', 1),
     sc4: S('d'), muscle: S('d', 0), bricks: [S('d', 2), S('d', 3), S('d2', 0)], build: S('d2', 1),
@@ -54,8 +54,9 @@
   const whoosh = (at) => ({ type: 'whoosh', at: at - 0.1, gain: 0.4, dur: 0.3 });
   const ding = (at, p = 1568.0, gain = 0.34) => ({ type: 'ding', at, p, gain });
   const sfx = [
-    ...c.flex.map((at) => ({ type: 'rep', at, gain: 0.4, p: 0 })), pop(0.05, 0.8, 0.5), pop(c.ruler, 1.2, 0.5),
-    { type: 'bonk', at: c.zero, gain: 0.45 },
+    { type: 'whoosh', at: 0, gain: 0.35, dur: 0.4 },
+    ...c.weeks.map((at, i) => ({ type: 'tick', at, gain: 0.22, p: 1 + i * 0.04 })),
+    { type: 'thud', at: c.stamp, gain: 0.6 }, { type: 'bonk', at: c.stamp + 0.02, gain: 0.4 },
     whoosh(c.sc2), pop(c.plate, 0.9), pop(c.q, 1.4, 0.6),
     whoosh(c.sc3), { type: 'fill', at: c.bar, gain: 0.14, dur: 0.5 }, { type: 'bonk', at: c.low, gain: 0.4 },
     whoosh(c.sc4), pop(c.muscle, 1.0), ...c.bricks.map((at, i) => ({ type: 'thud', at, gain: 0.35 + i * 0.03 })), ding(c.build),
