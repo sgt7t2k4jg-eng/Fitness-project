@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Protein per day</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<style>
+  :root { --or: #f0873a; --card: #1e1e24; --pill: #2b2b33; }
+  #stage { background: radial-gradient(900px 600px at 50% 0%, rgba(240,135,58,.18), transparent 70%), #131317; }
+  #grid { opacity: .25; }
+  .scene { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .card { background: var(--card); border-radius: 56px; }
+  .img { display: flex; align-items: center; justify-content: center; }
+  .img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 18px 20px rgba(0,0,0,.55)); }
+  .chip { height: 104px; padding: 0 46px 8px; border-radius: 52px; background: var(--pill); font-size: 56px; line-height: 96px; white-space: nowrap; }
+  .chip.or { background: var(--or); color: #131317; }
+  .chip.red { background: #e5484d; }
+  .t-or { color: var(--or); }
+  .lat { direction: ltr; }
+  #caption span { text-shadow: 0 8px 0 rgba(0,0,0,.6), 0 0 30px rgba(0,0,0,.8); }
+
+  /* gym opening */
+  #gym { left: 0; top: 0; width: 1080px; height: 1920px; }
+  #gym svg { position: absolute; inset: 0; filter: blur(3px); }
+  #gymShade { left: 0; top: 0; width: 1080px; height: 1920px;
+    background: radial-gradient(520px 640px at 50% 34%, rgba(255,214,150,.20), transparent 70%), linear-gradient(180deg, rgba(10,10,12,.35), rgba(10,10,12,.2) 40%, rgba(10,10,12,.92) 62%); }
+  .ruler-badge { font-size: 64px; height: 116px; padding: 0 40px 8px; line-height: 108px; }
+
+  /* meter */
+  .meter { left: 110px; width: 860px; height: 110px; border-radius: 55px; background: var(--pill); overflow: hidden; }
+  .meter i { position: absolute; top: 0; bottom: 0; right: 0; width: 0; border-radius: 55px; background: linear-gradient(90deg, #e5484d, #f0873a); }
+
+  /* foods */
+  .food { width: 300px; height: 300px; flex-direction: column; gap: 6px; }
+  .food .im { width: 170px; height: 170px; }
+  .food .im img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 14px rgba(0,0,0,.5)); }
+  .food b { font-size: 52px; }
+
+  /* numbers */
+  .big { font-size: 250px; line-height: 1; color: var(--or); direction: ltr; letter-spacing: -4px; text-align: center; white-space: nowrap; }
+  .row { height: 150px; border-radius: 40px; background: var(--pill); display: flex; align-items: center; justify-content: center; gap: 30px;
+         direction: ltr; font-size: 84px; white-space: nowrap; }
+  .row .r { color: var(--or); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="scenes"></div>
+  <div id="caption" class="abs"></div>
+</div>
+
+<script src="../../shared/kit.js"></script>
+<script src="../../shared/ui.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, DURATION } = TL;
+const { prog, lerp, easeOut, easeInOut, back, popScale, sticker } = KIT;
+const { el, box } = UI;
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL, { hi: '#f0873a' });
+const SC = UI.scenes(document.getElementById('scenes'));
+const IMG = (name) => `<img src="../../food3d/${name}">`;
+const img = (parent, name, cx, cy, size) => box(parent, 'img', IMG(name), cx, cy, size, size, { boxShadow: 'none' });
+
+// ---------------- 1. gym: sad lifter, arm not growing ----------------
+const GYM_SVG = (() => {
+  const plates = [[170, 520, 70], [170, 520, 50], [910, 560, 80], [910, 560, 58]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#1b1c22" stroke="#2c2e37" stroke-width="10"/>`).join('');
+  const dumbbells = Array.from({ length: 8 }, (_, i) => {
+    const x = 150 + i * 105, y = 880;
+    return `<rect x="${x}" y="${y - 6}" width="70" height="12" rx="6" fill="#3a3c47"/><rect x="${x - 6}" y="${y - 26}" width="20" height="52" rx="8" fill="#23242c"/><rect x="${x + 56}" y="${y - 26}" width="20" height="52" rx="8" fill="#23242c"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 1080 1920" width="1080" height="1920">
+    <defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#191a20"/><stop offset="1" stop-color="#101014"/></linearGradient>
+      <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1d22"/><stop offset="1" stop-color="#0b0b0d"/></linearGradient>
+      <radialGradient id="lamp" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".35"/><stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1080" height="1000" fill="url(#wall)"/>
+    <rect y="1000" width="1080" height="920" fill="url(#floor)"/>
+    ${Array.from({ length: 9 }, (_, i) => `<line x1="${540 + (i - 4) * 60}" y1="1000" x2="${540 + (i - 4) * 420}" y2="1920" stroke="#202128" stroke-width="4"/>`).join('')}
+    <rect x="80" y="260" width="26" height="740" fill="#24252d"/><rect x="250" y="260" width="26" height="740" fill="#24252d"/><rect x="70" y="420" width="220" height="18" fill="#2c2e37"/>
+    <rect x="800" y="260" width="26" height="740" fill="#24252d"/><rect x="990" y="260" width="26" height="740" fill="#24252d"/><rect x="790" y="460" width="236" height="18" fill="#2c2e37"/>
+    ${plates}
+    <rect x="120" y="900" width="840" height="20" rx="8" fill="#2a2b33"/><rect x="140" y="920" width="18" height="80" fill="#22232a"/><rect x="922" y="920" width="18" height="80" fill="#22232a"/>
+    ${dumbbells}
+    <rect x="360" y="140" width="360" height="16" rx="8" fill="#3c3d46"/><polygon points="370,156 710,156 980,1000 100,1000" fill="url(#lamp)"/>
+  </svg>`;
+})();
+SC.add(0, C.sc2 - 0.22, (r) => {
+  const gym = el(r, 'abs', GYM_SVG); gym.id = 'gym';
+  const shade = el(r, 'abs'); shade.id = 'gymShade';
+  const face = img(r, 'pensive.png', 400, 640, 380);
+  const arm = img(r, 'biceps.png', 760, 650, 300);
+  const ruler = img(r, 'ruler.png', 830, 420, 210);
+  const zero = box(r, 'chip red ruler-badge lat', '+0 cm', 780, 900, 290, 116, { boxShadow: '0 14px 0 rgba(0,0,0,.45)' });
+  return (t) => {
+    const fIn = easeOut(prog(t, 0, 0.5));
+    r.querySelector('#gym').style.transform = `scale(${lerp(1.12, 1.0, easeOut(prog(t, 0, 3))).toFixed(4)})`;
+    sticker(face, popScale(t, 0.05) * (1 - 0.03 * Math.sin(t * 2)), lerp(0, -6, prog(t, C.sad, 0.5)), `translateY(${(lerp(0, 18, easeInOut(prog(t, C.sad, 0.6)))).toFixed(1)}px)`);
+    face.style.opacity = fIn;
+    // two hopeful flexes, then nothing happens
+    const flex = C.flex.reduce((a, at) => a + Math.sin(prog(t, at, 0.4) * Math.PI) * 0.1, 0);
+    sticker(arm, popScale(t, 0.2) * (1 + flex), -8 + flex * 40);
+    sticker(ruler, popScale(t, C.ruler), 38);
+    sticker(zero, popScale(t, C.zero), -4, `translateX(${(Math.sin(prog(t, C.zero, 0.5) * Math.PI * 4) * 10 * (1 - prog(t, C.zero, 0.5))).toFixed(1)}px)`);
+  };
+});
+
+// ---------------- 2. the problem may be the food ----------------
+SC.add(C.sc2, C.sc3 - 0.22, (r) => {
+  const card = box(r, 'card', '', 540, 620, 760, 760, { boxShadow: 'none' });
+  const plate = img(r, 'plate.png', 540, 600, 460);
+  const q = box(r, 'chip or', '؟', 810, 330, 150, 150, { fontSize: '110px', lineHeight: '1', paddingBottom: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' });
+  return (t) => {
+    sticker(card, easeOut(prog(t, C.sc2, 0.4)));
+    sticker(plate, popScale(t, C.plate + 0.05), 0, `translateY(${(Math.sin(t * 2.5) * 10).toFixed(1)}px)`);
+    sticker(q, popScale(t, C.q), 10);
+  };
+});
+
+// ---------------- 3. protein intake is low ----------------
+SC.add(C.sc3, C.sc4 - 0.22, (r) => {
+  const card = box(r, 'card', '', 540, 620, 960, 700, { boxShadow: 'none' });
+  const title = el(r, 'abs', 'البروتين لي كتدخل', { left: '0', width: '1080px', top: '360px', textAlign: 'center', fontSize: '84px' });
+  const meter = el(r, 'abs meter', '<i></i>', { top: '560px' });
+  const low = box(r, 'chip red', 'قليل', 540, 800, 260, 104, { boxShadow: 'none' });
+  return (t) => {
+    sticker(card, easeOut(prog(t, C.sc3, 0.4)));
+    sticker(title, popScale(t, C.sc3 + 0.1));
+    sticker(meter, easeOut(prog(t, C.sc3 + 0.2, 0.3)));
+    meter.firstChild.style.width = lerp(0, 22, easeOut(prog(t, C.bar, 0.7))) + '%';
+    sticker(low, popScale(t, C.low), -4, `translateX(${(Math.sin(prog(t, C.low, 0.5) * Math.PI * 4) * 10 * (1 - prog(t, C.low, 0.5))).toFixed(1)}px)`);
+  };
+});
+
+// ---------------- 4. protein builds muscle ----------------
+SC.add(C.sc4, C.sc5 - 0.22, (r) => {
+  const arm = img(r, 'biceps.png', 540, 470, 380);
+  const bricks = [[400, 860], [680, 860], [540, 760]].map(([x, y]) => img(r, 'brick.png', x, y, 190));
+  const chip = box(r, 'chip or', 'بناء العضلات', 540, 1040, 470, 104, { boxShadow: 'none' });
+  return (t) => {
+    const grow = easeOut(prog(t, C.build, 0.5));
+    sticker(arm, popScale(t, C.muscle) * (1 + 0.14 * grow), -6);
+    bricks.forEach((b, i) => {
+      const p = easeOut(prog(t, C.bricks[i], 0.35));
+      b.style.opacity = t >= C.bricks[i] ? 1 : 0;
+      b.style.transform = `translateY(${((1 - p) * -380).toFixed(1)}px) rotate(${((1 - p) * (i % 2 ? 20 : -20)).toFixed(1)}deg)`;
+    });
+    sticker(chip, popScale(t, C.build), -2);
+  };
+});
+
+// ---------------- 5. where to find it ----------------
+SC.add(C.sc5, C.sc6 - 0.22, (r) => {
+  const F = [['egg.png', 'البيض'], ['chicken.png', 'الدجاج'], ['meat.png', 'اللحم'], ['sardines.png', 'الحوت'], ['tuna.svg', 'التونة'], ['beans.png', 'القطاني']];
+  const pos = (i) => [540 + (1 - (i % 3)) * 320, 400 + Math.floor(i / 3) * 330];
+  const cards = F.map(([im, name], i) => { const [x, y] = pos(i); return box(r, 'card img food', `<div class="im">${IMG(im)}</div><b>${name}</b>`, x, y, 300, 300, { boxShadow: 'none' }); });
+  return (t) => cards.forEach((d, i) => sticker(d, popScale(t, C.foods[i]), [-3, 2, -2, 3, -3, 2][i]));
+});
+
+// ---------------- 6. how much per day? ----------------
+SC.add(C.sc6, C.sc7 - 0.22, (r) => {
+  const face = img(r, 'thinking.png', 540, 470, 380);
+  const q = box(r, 'chip', 'شحال فالنهار؟', 540, 820, 600, 120, { fontSize: '64px', lineHeight: '110px', boxShadow: 'none' });
+  return (t) => {
+    sticker(face, popScale(t, C.think), Math.sin(t * 2) * 4);
+    sticker(q, popScale(t, C.ask), -2);
+  };
+});
+
+// ---------------- 7. 1.6 – 2 g per kg ----------------
+SC.add(C.sc7, C.sc8 - 0.22, (r) => {
+  const card = box(r, 'card', '', 540, 640, 960, 760, { boxShadow: 'none' });
+  const big = el(r, 'abs big', '1.6 – 2g', { left: '0', width: '1080px', top: '400px' });
+  const per = el(r, 'abs', 'لكل كيلو من وزنك', { left: '0', width: '1080px', top: '700px', textAlign: 'center', fontSize: '76px' });
+  const lb = el(r, 'abs t-or', 'بروتين', { left: '0', width: '1080px', top: '300px', textAlign: 'center', fontSize: '64px' });
+  return (t) => {
+    sticker(card, easeOut(prog(t, C.sc7, 0.4)));
+    sticker(lb, popScale(t, C.sc7 + 0.1));
+    sticker(big, popScale(t, C.range));
+    sticker(per, popScale(t, C.perKg));
+  };
+});
+
+// ---------------- 8. example: 60 kg ----------------
+SC.add(C.sc8, DURATION + 5, (r) => {
+  const card = box(r, 'card', '', 540, 650, 960, 900, { boxShadow: 'none' });
+  const kg = box(r, 'chip or', 'وزنك<span style="direction:ltr;unicode-bidi:isolate;margin-right:18px">60 kg</span>', 540, 320, 460, 110, { fontSize: '62px', lineHeight: '100px', boxShadow: 'none' });
+  const row1 = el(r, 'abs row', '<span>60 × 2</span><span>=</span><span class="r">120g</span>', { left: '120px', width: '840px', top: '480px' });
+  const row2 = el(r, 'abs row', '<span>60 × 1.6</span><span>=</span><span class="r">96g</span>', { left: '120px', width: '840px', top: '670px' });
+  const day = el(r, 'abs', 'فالنهار', { left: '0', width: '1080px', top: '880px', textAlign: 'center', fontSize: '64px', color: 'rgba(255,255,255,.6)' });
+  const res = [row1.querySelector('.r'), row2.querySelector('.r')];
+  return (t) => {
+    sticker(card, easeOut(prog(t, C.sc8, 0.4)));
+    sticker(kg, popScale(t, C.kg), -2);
+    [[row1, C.row1, res[0], C.res1], [row2, C.row2, res[1], C.res2]].forEach(([row, at, rr, rat]) => {
+      const p = easeOut(prog(t, at, 0.35));
+      row.style.opacity = p > 0 ? 1 : 0;
+      row.style.transform = `translateX(${((1 - p) * 100).toFixed(1)}px)`;
+      rr.style.opacity = t >= rat ? 1 : 0;
+      rr.style.display = 'inline-block';
+      rr.style.transform = `scale(${t >= rat ? back(prog(t, rat, 0.35)).toFixed(4) : 0})`;
+    });
+    sticker(day, popScale(t, C.res1 + 0.3));
+  };
+});
+
+function setTime(t) { updateCaptions(t); SC.draw(t); }
+UI.boot(setTime, DURATION);
+</script>
+</body>
+</html>

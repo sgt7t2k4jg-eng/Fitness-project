@@ -1,2 +1,2 @@
-chicken/egg/meat: Microsoft Fluent Emoji 3D (MIT, https://github.com/microsoft/fluentui-emoji).
+chicken/egg/meat/pensive/biceps/ruler/plate/brick/beans/thinking: Microsoft Fluent Emoji 3D (MIT, https://github.com/microsoft/fluentui-emoji).
 sardines.png is edited from the Fluent "Fish" image (MIT). tuna.svg was drawn for this project.
