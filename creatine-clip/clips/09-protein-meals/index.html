@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Protein in 4 meals</title>
+<link rel="stylesheet" href="../../shared/kit.css">
+<style>
+  :root { --or: #f0873a; --card: #1e1e24; --pill: #2b2b33; }
+  #stage { background: radial-gradient(900px 600px at 50% 0%, rgba(240,135,58,.18), transparent 70%), #131317; }
+  #grid { opacity: .25; }
+  #caption span { text-shadow: 0 8px 0 rgba(0,0,0,.6), 0 0 30px rgba(0,0,0,.8); }
+  .total { left: 140px; top: 170px; width: 800px; height: 330px; border-radius: 56px; background: var(--card);
+           display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .total b { font-size: 200px; line-height: 1; color: var(--or); direction: ltr; letter-spacing: -4px; }
+  .total small { font-size: 54px; color: rgba(255,255,255,.65); }
+  .div { left: 465px; top: 520px; width: 150px; height: 150px; border-radius: 50%; background: var(--pill);
+         display: flex; align-items: center; justify-content: center; font-size: 66px; direction: ltr; padding-bottom: 8px; }
+  .meal { width: 440px; height: 220px; border-radius: 44px; background: var(--card); border: 3px solid rgba(255,255,255,.08);
+          display: flex; align-items: center; gap: 22px; padding: 0 30px; }
+  .meal img { width: 110px; height: 110px; object-fit: contain; filter: drop-shadow(0 10px 12px rgba(0,0,0,.5)); flex: none; }
+  .meal .tx { display: flex; flex-direction: column; }
+  .meal .tx small { font-size: 40px; color: rgba(255,255,255,.6); line-height: 1.2; }
+  .meal .tx b { font-size: 96px; line-height: 1; color: var(--or); direction: ltr; text-align: right; }
+  .meal.hot { border-color: var(--or); box-shadow: 0 0 40px rgba(240,135,58,.3); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="scene"></div>
+  <div id="caption" class="abs"></div>
+</div>
+<script src="../../shared/kit.js"></script>
+<script src="../../shared/ui.js"></script>
+<script src="timeline.js"></script>
+<script>
+const { cues: C, DURATION } = TL;
+const { prog, lerp, easeOut, easeInOut, back, popScale, sticker } = KIT;
+const { el } = UI;
+const root = document.getElementById('scene');
+const updateCaptions = KIT.captions(document.getElementById('caption'), TL, { hi: '#f0873a' });
+
+const total = el(root, 'abs total', '<b>120g</b><small>فالنهار</small>');
+const num = total.querySelector('b');
+const div = el(root, 'abs div', '÷ 4');
+// 2x2 grid of meals, RTL order (meal 1 top-right)
+const POS = [[560, 700], [80, 700], [560, 950], [80, 950]];
+const meals = POS.map(([x, y], i) => el(root, 'abs meal', `<img src="../../food3d/plate.png"><div class="tx"><small>وجبة ${i + 1}</small><b>30g</b></div>`, { left: x + 'px', top: y + 'px' }));
+
+function setTime(t) {
+  updateCaptions(t);
+  // total: counts up 0 -> 120 g, then lifts slightly when it splits
+  sticker(total, popScale(t, C.total), 0, `translateY(${(-easeInOut(prog(t, C.split, 0.4)) * 20).toFixed(1)}px)`);
+  num.textContent = Math.round(lerp(0, 120, easeOut(prog(t, C.total + 0.1, 0.9)))) + 'g';
+  total.style.boxShadow = t >= C.day && t < C.split ? '0 0 50px rgba(240,135,58,.35)' : 'none';
+  sticker(div, popScale(t, C.div), -6);
+  // meals fly out of the total card
+  meals.forEach((m, i) => {
+    const p = easeOut(prog(t, C.meals[i], 0.4));
+    const [x, y] = POS[i];
+    m.style.opacity = t >= C.meals[i] ? 1 : 0;
+    m.style.transform = `translate(${((1 - p) * (540 - 220 - x)).toFixed(1)}px, ${((1 - p) * (330 - 110 - y)).toFixed(1)}px) scale(${lerp(0.3, 1, Math.min(1, back(prog(t, C.meals[i], 0.4)))).toFixed(4)})`;
+    const hot = t >= C.each + i * 0.08;
+    m.classList.toggle('hot', hot);
+    m.querySelector('b').style.transform = `scale(${hot ? (1 + 0.15 * Math.sin(prog(t, C.each + i * 0.08, 0.3) * Math.PI)).toFixed(3) : 1})`;
+  });
+}
+UI.boot(setTime, DURATION);
+</script>
+</body>
+</html>
